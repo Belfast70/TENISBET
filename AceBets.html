@@ -1,0 +1,2772 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<meta name="author" content="Jorge Albert"/>
+<meta name="copyright" content="© 2025 Jorge Albert. Todos los derechos reservados."/>
+<meta name="description" content="AceBets Pro — Tennis Analytics. Desarrollado por Jorge Albert."/>
+<meta name="theme-color" content="#050810"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="AceBets Pro"/>
+<meta name="format-detection" content="telephone=no"/>
+<title>AceBets Pro — Tennis Analytics | © Jorge Albert</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23050810'/%3E%3Cstop offset='100%25' stop-color='%230c1225'/%3E%3C/linearGradient%3E%3ClinearGradient id='g1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23a3e635'/%3E%3Cstop offset='100%25' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23bg)'/%3E%3Crect width='64' height='64' rx='14' fill='none' stroke='url(%23g1)' stroke-width='2' opacity='0.6'/%3E%3Ccircle cx='32' cy='32' r='17' fill='none' stroke='url(%23g1)' stroke-width='2.5'/%3E%3Cpath d='M18 32 Q32 14 46 32' fill='none' stroke='url(%23g1)' stroke-width='2'/%3E%3Cpath d='M18 32 Q32 50 46 32' fill='none' stroke='%2322d3ee' stroke-width='2' opacity='0.7'/%3E%3Cpath d='M32 15 Q50 32 32 49' fill='none' stroke='%23a3e635' stroke-width='2' opacity='0.7'/%3E%3Cellipse cx='32' cy='32' rx='5' ry='5' fill='url(%23g1)' opacity='0.9'/%3E%3Cpath d='M44 12 L52 8 L50 16 Z' fill='%23a3e635'/%3E%3C/svg%3E"/>
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23050810'/%3E%3Cstop offset='100%25' stop-color='%230c1225'/%3E%3C/linearGradient%3E%3ClinearGradient id='g1' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23a3e635'/%3E%3Cstop offset='100%25' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='180' height='180' rx='40' fill='url(%23bg)'/%3E%3Crect width='180' height='180' rx='40' fill='none' stroke='url(%23g1)' stroke-width='4' opacity='0.5'/%3E%3Ccircle cx='90' cy='90' r='52' fill='none' stroke='url(%23g1)' stroke-width='5'/%3E%3Cpath d='M38 90 Q90 30 142 90' fill='none' stroke='url(%23g1)' stroke-width='4'/%3E%3Cpath d='M38 90 Q90 150 142 90' fill='none' stroke='%2322d3ee' stroke-width='4' opacity='0.8'/%3E%3Cpath d='M90 38 Q150 90 90 142' fill='none' stroke='%23a3e635' stroke-width='4' opacity='0.8'/%3E%3Ccircle cx='90' cy='90' r='14' fill='url(%23g1)'/%3E%3Cpath d='M126 28 L148 18 L140 42 Z' fill='%23a3e635'/%3E%3Ctext x='90' y='172' text-anchor='middle' font-family='Arial Black' font-size='14' font-weight='900' fill='%23a3e635' opacity='0.8'%3EACEBETS%3C/text%3E%3C/svg%3E"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=Syne+Mono&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#050810;--s1:#080d1a;--s2:#0c1225;--s3:#101830;
+  --border:#162040;
+  --lime:#a3e635;--cyan:#22d3ee;--amber:#fbbf24;--rose:#f43f5e;
+  --violet:#818cf8;--emerald:#34d399;--sky:#38bdf8;--orange:#fb923c;
+  --text:#e8edf8;--muted:#4a5980;--mutedL:#7a8aaa;
+  --nav-h:56px;
+  --header-h:54px;
+  --safe-bottom:env(safe-area-inset-bottom,0px);
+  --safe-top:env(safe-area-inset-top,0px);
+}
+html{height:100%;-webkit-text-size-adjust:100%}
+body{background:var(--bg);font-family:'DM Sans',sans-serif;color:var(--text);min-height:100vh;min-height:-webkit-fill-available;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--s1)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes glow{0%,100%{box-shadow:0 0 8px #a3e63522}50%{box-shadow:0 0 28px #a3e63555}}
+.fade{animation:fadeUp .3s ease forwards}
+.spin{animation:spin 1s linear infinite}
+.glow{animation:glow 2s ease infinite}
+button{cursor:pointer;font-family:'DM Sans',sans-serif;touch-action:manipulation;-webkit-appearance:none;min-height:36px}
+button:disabled{opacity:.4;cursor:not-allowed}
+input,select{font-family:'DM Sans',sans-serif;outline:none;-webkit-appearance:none;border-radius:0;font-size:16px!important}
+/* ─── MOBILE BOTTOM NAV ─── */
+#mobile-nav{
+  display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:var(--s1);border-top:1px solid var(--border);
+  padding:0 4px calc(var(--safe-bottom) + 4px);
+  display:none;gap:0;
+}
+#root{padding-bottom:0}
+/* ─── RESPONSIVE ─── */
+@media(max-width:640px){
+  :root{--header-h:48px}
+  #mobile-nav{display:flex!important}
+  #desktop-nav{display:none!important}
+  #root{padding-bottom:calc(var(--nav-h) + var(--safe-bottom) + 8px)}
+  body{padding-top:var(--safe-top)}
+  /* Make inputs not zoom on focus in iOS */
+  input,select,textarea{font-size:16px!important}
+  /* Bigger tap targets */
+  button{min-height:40px}
+  /* Full-width cards on mobile */
+  .match-grid{grid-template-columns:1fr!important}
+  /* Stacked columns on mobile */
+  .col-2-mobile{grid-template-columns:1fr!important;flex-direction:column!important}
+  /* Compact header */
+  .header-pts{display:none!important}
+  /* Scrollable tabs/chips */
+  .chip-scroll{overflow-x:auto!important;flex-wrap:nowrap!important;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .chip-scroll::-webkit-scrollbar{display:none}
+  /* Full-width main content */
+  main{padding:.75rem .75rem!important}
+  /* Compact stats grid 2 cols */
+  .stats-grid-4{grid-template-columns:repeat(2,1fr)!important}
+  /* MC row — stack on tiny screens */
+  .mc-row{flex-direction:column!important;gap:4px!important}
+  /* Scrollable table wrapper */
+  .table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  /* Reduce font sizes a bit */
+  .font-lg{font-size:18px!important}
+  .font-xl{font-size:20px!important}
+  .font-xxl{font-size:24px!important}
+  /* Date bar */
+  .date-bar{top:var(--header-h)!important}
+  /* H2H vs column hide label */
+  .h2h-vs{min-width:54px!important;padding-top:30px!important}
+  /* Player cards list */
+  .player-list{max-height:220px!important}
+  /* PnL chart */
+  .pnl-chart{font-size:9px}
+  /* Picker row stacks on mobile */
+  .compare-row{flex-direction:column!important}
+  /* hide copyright bar in footer on very small screens to save space */
+  .footer-copy{font-size:8px!important}
+}
+@media(max-width:380px){
+  main{padding:.5rem!important}
+  .stats-grid-4{grid-template-columns:1fr 1fr!important}
+}
+@media(min-width:641px){
+  #mobile-nav{display:none!important}
+}
+/* ─── iOS SAFE AREA for sticky header ─── */
+header{padding-top:var(--safe-top)!important;min-height:calc(var(--header-h) + var(--safe-top))!important}
+</style>
+</head>
+<body><div id="root"></div>
+<script type="text/babel">
+/*
+ * ╔══════════════════════════════════════════════════════════════╗
+ * ║           AceBets Pro — Tennis Analytics Engine              ║
+ * ║                                                              ║
+ * ║   © 2025 Jorge Albert. Todos los derechos reservados.        ║
+ * ║   Prohibida su reproducción, distribución o modificación     ║
+ * ║   sin autorización expresa del autor.                        ║
+ * ║                                                              ║
+ * ║   Desarrollado y diseñado por Jorge Albert                   ║
+ * ╚══════════════════════════════════════════════════════════════╝
+ */
+const {useState,useEffect,useMemo,useRef,useCallback}=React;
+
+// ═══════════════════════════════════════════
+// COLORS
+// ═══════════════════════════════════════════
+const C={
+  bg:'var(--bg)',s1:'var(--s1)',s2:'var(--s2)',s3:'var(--s3)',
+  border:'var(--border)',
+  lime:'var(--lime)',cyan:'var(--cyan)',amber:'var(--amber)',
+  rose:'var(--rose)',violet:'var(--violet)',emerald:'var(--emerald)',
+  sky:'var(--sky)',orange:'var(--orange)',
+  text:'var(--text)',muted:'var(--muted)',mutedL:'var(--mutedL)',
+};
+const SURF_CLR={Hard:C.sky,Clay:C.amber,Grass:C.emerald,Carpet:C.violet,Unknown:C.muted};
+const SURF_ICO={Hard:'🔵',Clay:'🔴',Grass:'🟢',Carpet:'🟣',Unknown:'⚪'};
+
+// Torneo level labels & colors
+const LVL_LABEL={G:'Grand Slam',M:'Masters 1000',A:'ATP 500',D:'ATP 250',F:'Finals',C:'Challenger'};
+const LVL_CLR={G:C.lime,M:C.amber,A:C.sky,D:C.violet,F:C.orange,C:C.mutedL};
+
+// ═══════════════════════════════════════════
+// CACHE
+// ═══════════════════════════════════════════
+const _cache={};
+async function cfetch(url,ttl=86400000){
+  const n=Date.now();
+  if(_cache[url]&&n-_cache[url].t<ttl) return _cache[url].d;
+  try{
+    const r=await fetch(url);
+    if(!r.ok) return null;
+    const d=await r.text();
+    _cache[url]={d,t:n};
+    return d;
+  }catch{return null;}
+}
+
+// ═══════════════════════════════════════════
+// CSV
+// ═══════════════════════════════════════════
+function parseCSV(txt){
+  if(!txt) return [];
+  const lines=txt.trim().split('\n');
+  if(lines.length<2) return [];
+  const hdr=lines[0].split(',').map(h=>h.replace(/^"|"$/g,'').trim());
+  return lines.slice(1).map(l=>{
+    const v=l.split(',');
+    const row={};
+    hdr.forEach((h,i)=>{row[h]=(v[i]||'').replace(/^"|"$/g,'').trim();});
+    return row;
+  }).filter(r=>Object.values(r).some(v=>v));
+}
+
+// ═══════════════════════════════════════════
+// ELO ENGINE
+// ═══════════════════════════════════════════
+const ELO0=1500;
+const TOURNEY_K={G:32,M:24,A:16,D:8,F:28,C:12};
+function eloExp(a,b){return 1/(1+Math.pow(10,(b-a)/400));}
+function normSurf(s){
+  if(!s) return 'Hard';
+  const u=s.toUpperCase();
+  if(u.includes('CLAY')) return 'Clay';
+  if(u.includes('GRASS')) return 'Grass';
+  if(u.includes('CARPET')) return 'Carpet';
+  return 'Hard';
+}
+function getK(level,round){
+  const base=TOURNEY_K[level]||12;
+  if(round==='F') return base*1.5;
+  if(round==='SF') return base*1.2;
+  return base;
+}
+
+// Parse YYYYMMDD → Date
+function parseDate(s){
+  if(!s||s.length<8) return null;
+  return new Date(s.slice(0,4)+'-'+s.slice(4,6)+'-'+s.slice(6,8));
+}
+
+// ═══════════════════════════════════════════
+// BUILD ELO — with surface-specific form + fatigue tracking
+// MEJORA 1: surface-specific form (not global)
+// MEJORA 2: fatigue = real match count last 14 days
+// ═══════════════════════════════════════════
+function buildElo(matches){
+  const R={};
+  const ens=(id,name)=>{
+    if(!R[id]) R[id]={
+      id, name:name||'',
+      overall:ELO0, Hard:ELO0, Clay:ELO0, Grass:ELO0, Carpet:ELO0,
+      count:0, wins:0, losses:0,
+      sc:{Hard:0,Clay:0,Grass:0,Carpet:0},  // surface count
+      sw:{Hard:0,Clay:0,Grass:0,Carpet:0},  // surface wins
+      // MEJORA 1: form per surface
+      formAll:[], formHard:[], formClay:[], formGrass:[], formCarpet:[],
+      // serve stats (winner stats)
+      sv:{aces:0,df:0,svpt:0,fin:0,fwon:0,swon:0,bps:0,bpf:0,n:0},
+      // serve stats (loser stats) — for return calculation
+      svL:{aces:0,df:0,svpt:0,fin:0,fwon:0,swon:0,bps:0,bpf:0,n:0},
+      ret:{bpw:0,bpf:0,n:0},
+      // MEJORA 2: date log for fatigue
+      datelog:[],
+      lastDate:'',
+    };
+    if(name&&!R[id].name) R[id].name=name;
+    return R[id];
+  };
+
+  for(const m of matches){
+    const wId=m.winner_id, lId=m.loser_id;
+    if(!wId||!lId) continue;
+    const surf=normSurf(m.surface);
+    const K=getK(m.tourney_level,m.round);
+    const date=m.tourney_date||'';
+    const w=ens(wId,m.winner_name||'');
+    const l=ens(lId,m.loser_name||'');
+
+    // Overall Elo
+    const eo=eloExp(w.overall,l.overall);
+    w.overall+=K*(1-eo); l.overall+=K*(0-eo);
+    // Surface Elo
+    const es=eloExp(w[surf],l[surf]);
+    w[surf]+=K*(1-es); l[surf]+=K*(0-es);
+
+    // Counts
+    w.count++;w.wins++;w.sc[surf]++;w.sw[surf]++;
+    l.count++;l.losses++;l.sc[surf]++;
+    w.lastDate=date; l.lastDate=date;
+
+    // MEJORA 1: surface-specific form (last 20 per surface, last 20 overall)
+    w.formAll.push(1); if(w.formAll.length>20) w.formAll.shift();
+    l.formAll.push(0); if(l.formAll.length>20) l.formAll.shift();
+    const wSF='form'+surf, lSF='form'+surf;
+    w[wSF].push(1); if(w[wSF].length>15) w[wSF].shift();
+    l[lSF].push(0); if(l[lSF].length>15) l[lSF].shift();
+
+    // MEJORA 2: datelog for fatigue (keep last 60 entries)
+    if(date){ w.datelog.push(date); if(w.datelog.length>60) w.datelog.shift(); }
+    if(date){ l.datelog.push(date); if(l.datelog.length>60) l.datelog.shift(); }
+
+    // Serve stats (winner)
+    if(m.w_svpt&&parseInt(m.w_svpt)>0){
+      const s=w.sv;
+      s.aces+=parseInt(m.w_ace||0); s.df+=parseInt(m.w_df||0);
+      s.svpt+=parseInt(m.w_svpt||0); s.fin+=parseInt(m.w_1stIn||0);
+      s.fwon+=parseInt(m.w_1stWon||0); s.swon+=parseInt(m.w_2ndWon||0);
+      s.bps+=parseInt(m.w_bpSaved||0); s.bpf+=parseInt(m.w_bpFaced||0); s.n++;
+      // return for loser
+      l.ret.bpw+=parseInt(m.w_bpFaced||0)-parseInt(m.w_bpSaved||0);
+      l.ret.bpf+=parseInt(m.w_bpFaced||0); l.ret.n++;
+    }
+    // Serve stats (loser) — stored separately
+    if(m.l_svpt&&parseInt(m.l_svpt)>0){
+      const s=l.svL;
+      s.aces+=parseInt(m.l_ace||0); s.df+=parseInt(m.l_df||0);
+      s.svpt+=parseInt(m.l_svpt||0); s.fin+=parseInt(m.l_1stIn||0);
+      s.fwon+=parseInt(m.l_1stWon||0); s.swon+=parseInt(m.l_2ndWon||0);
+      s.bps+=parseInt(m.l_bpSaved||0); s.bpf+=parseInt(m.l_bpFaced||0); s.n++;
+      // return for winner
+      w.ret.bpw+=parseInt(m.l_bpFaced||0)-parseInt(m.l_bpSaved||0);
+      w.ret.bpf+=parseInt(m.l_bpFaced||0); w.ret.n++;
+    }
+  }
+  return R;
+}
+
+// ═══════════════════════════════════════════
+// DERIVE STATS
+// ═══════════════════════════════════════════
+function deriveStats(p,surf){
+  // Combine winner + loser serve stats for more data
+  const sw=p.sv, sl=p.svL;
+  const totalSvpt=(sw.svpt||0)+(sl.svpt||0);
+  const totalFin=(sw.fin||0)+(sl.fin||0);
+  const totalFwon=(sw.fwon||0)+(sl.fwon||0);
+  const totalSwon=(sw.swon||0)+(sl.swon||0);
+  const totalBps=(sw.bps||0)+(sl.bps||0);
+  const totalBpf=(sw.bpf||0)+(sl.bpf||0);
+  const totalAces=(sw.aces||0)+(sl.aces||0);
+
+  const fstIn  = totalSvpt>0   ? +(totalFin/totalSvpt*100).toFixed(1)   : null;
+  const fstWon = totalFin>0    ? +(totalFwon/totalFin*100).toFixed(1)   : null;
+  const sndWon = (totalSvpt-totalFin)>0 ? +(totalSwon/(totalSvpt-totalFin)*100).toFixed(1) : null;
+  const bpSave = totalBpf>0    ? +(totalBps/totalBpf*100).toFixed(1)    : null;
+  const acePct = totalSvpt>0   ? +(totalAces/totalSvpt*100).toFixed(1)  : null;
+  const bpConv = p.ret.bpf>0  ? +(p.ret.bpw/p.ret.bpf*100).toFixed(1) : null;
+
+  // MEJORA 1: surface-specific form
+  const surfKey='form'+(surf||'All');
+  const formSurf=p[surfKey]||[];
+  const formAll=p.formAll||[];
+
+  // MEJORA 2: fatigue — matches in last 14 days
+  const now=Date.now();
+  const fatigue14=(p.datelog||[]).filter(d=>{
+    const dt=parseDate(d);
+    return dt&&(now-dt.getTime())<14*86400000;
+  }).length;
+  const fatigueAdj=fatigue14>=5?-(fatigue14-4)*0.012:0; // penalty after 4 matches in 14 days
+
+  return{
+    fstIn,fstWon,sndWon,bpSave,acePct,bpConv,
+    form5all:   formAll.slice(-5).reduce((a,b)=>a+b,0),
+    form10all:  formAll.slice(-10).reduce((a,b)=>a+b,0),
+    form5surf:  formSurf.slice(-5).reduce((a,b)=>a+b,0),
+    form10surf: formSurf.length>=3?formSurf.slice(-10).reduce((a,b)=>a+b,0):null,
+    surfSampleOk: formSurf.length>=5,
+    fatigue14, fatigueAdj,
+    // MEJORA 3: point probability from real serve/return stats
+    pServeWon: (fstIn!=null&&fstWon!=null&&sndWon!=null)
+      ? +((fstIn/100*fstWon/100 + (1-fstIn/100)*sndWon/100)*100).toFixed(2)
+      : null,
+  };
+}
+
+// ═══════════════════════════════════════════
+// PREDICTION ENGINE — fully data-driven
+// MEJORA 3: point probability from real stats
+// ═══════════════════════════════════════════
+function predictMatch(p1,p2,surface,h2h){
+  if(!p1||!p2) return null;
+  const surf=normSurf(surface);
+  const d1=deriveStats(p1,surf);
+  const d2=deriveStats(p2,surf);
+
+  // ── Elo blend (surface-specific if enough data) ──────────────
+  const eloOv=eloExp(p1.overall,p2.overall);
+  const eloSf=eloExp(p1[surf]||ELO0,p2[surf]||ELO0);
+  const sfCnt=(p1.sc[surf]||0)+(p2.sc[surf]||0);
+  const sfW=Math.min(0.68,sfCnt/50*0.68);
+  let prob=sfW*eloSf+(1-sfW)*eloOv;
+
+  // ── MEJORA 1: surface-specific form adjustment ────────────────
+  let formAdj=0;
+  if(d1.surfSampleOk&&d2.surfSampleOk&&d1.form10surf!=null&&d2.form10surf!=null){
+    // Use surface form when we have enough data (≥5 matches on surface)
+    const f1=d1.form10surf/Math.min(10,p1['form'+surf]?.length||1);
+    const f2=d2.form10surf/Math.min(10,p2['form'+surf]?.length||1);
+    formAdj=(f1-f2)*0.09;
+  } else {
+    // Fallback to overall form
+    const f1=d1.form10all/Math.max(1,Math.min(10,p1.formAll?.length||1));
+    const f2=d2.form10all/Math.max(1,Math.min(10,p2.formAll?.length||1));
+    formAdj=(f1-f2)*0.07;
+  }
+  prob+=formAdj;
+
+  // ── H2H adjustment ────────────────────────────────────────────
+  let h2hAdj=0;
+  if(h2h&&(h2h.p1Wins+h2h.p2Wins)>=3){
+    const r=h2h.p1Wins/(h2h.p1Wins+h2h.p2Wins);
+    h2hAdj=(r-0.5)*0.06;
+    prob+=h2hAdj;
+  }
+
+  // ── MEJORA 2: fatigue adjustment ──────────────────────────────
+  const fatAdj=(d1.fatigueAdj||0)-(d2.fatigueAdj||0);
+  prob+=fatAdj;
+
+  // ── Rank adjustment ───────────────────────────────────────────
+  let rankAdj=0;
+  if(p1.rank&&p2.rank){
+    const rd=(p2.rank-p1.rank)/600;
+    rankAdj=Math.sign(rd)*Math.min(0.04,Math.abs(rd)*0.02);
+    prob+=rankAdj;
+  }
+
+  prob=Math.min(0.94,Math.max(0.06,prob));
+
+  // ── MEJORA 3: Monte Carlo with real point probabilities ───────
+  // p_serve_won = firstIn% × firstWon% + (1-firstIn%) × secondWon%
+  // If real stats available, use them; otherwise approximate from match win prob
+  const pp1serve=d1.pServeWon!=null ? d1.pServeWon/100 : null;
+  const pp2serve=d2.pServeWon!=null ? d2.pServeWon/100 : null;
+  const mc=simMatch(prob,5000,pp1serve,pp2serve);
+
+  // ── Confidence score ──────────────────────────────────────────
+  let conf=60;
+  if(p1.count>30&&p2.count>30) conf+=5;
+  if(sfCnt>20) conf+=5;
+  if(h2h&&(h2h.p1Wins+h2h.p2Wins)>=3) conf+=4;
+  if(Math.abs(prob-0.5)>0.15) conf+=4;
+  if(d1.pServeWon!=null&&d2.pServeWon!=null) conf+=4; // real point probs
+  if(d1.surfSampleOk&&d2.surfSampleOk) conf+=3;        // surface form
+  conf=Math.min(88,conf);
+
+  return{
+    p1:Math.round(prob*100), p2:Math.round((1-prob)*100),
+    eloOv:Math.round(eloOv*100), eloSf:Math.round(eloSf*100),
+    formAdj:Math.round(formAdj*100), sfW:Math.round(sfW*100),
+    h2hAdj:Math.round(h2hAdj*100),
+    fatAdj:Math.round(fatAdj*100),
+    rankAdj:Math.round(rankAdj*100),
+    fatigue1:d1.fatigue14, fatigue2:d2.fatigue14,
+    usedSurfForm:d1.surfSampleOk&&d2.surfSampleOk,
+    usedRealPP:d1.pServeWon!=null&&d2.pServeWon!=null,
+    pp1serve:d1.pServeWon, pp2serve:d2.pServeWon,
+    d1,d2,mc,conf,surf,
+  };
+}
+
+// ═══════════════════════════════════════════
+// MONTE CARLO — real point probabilities
+// MEJORA 3: use pp1serve/pp2serve from real stats
+// ═══════════════════════════════════════════
+function simGame(pp){
+  let a=0,b=0;
+  for(let i=0;i<300;i++){
+    if(Math.random()<pp) a++; else b++;
+    if(a>=4&&a-b>=2) return 1;
+    if(b>=4&&b-a>=2) return 0;
+  }
+  return Math.random()<pp?1:0;
+}
+function simTB(pp){
+  let a=0,b=0;
+  for(let i=0;i<200;i++){
+    if(Math.random()<pp) a++; else b++;
+    if(a>=7&&a-b>=2) return 1;
+    if(b>=7&&b-a>=2) return 0;
+  }
+  return Math.random()<pp?1:0;
+}
+function simSet(pp1serve,pp2serve){
+  // pp1serve = prob p1 wins a point on HIS serve
+  // pp2serve = prob p2 wins a point on HIS serve
+  let a=0,b=0,srv=true;
+  for(let i=0;i<130;i++){
+    // when p1 serves: pp1serve chance p1 wins point
+    // when p2 serves: pp2serve chance p2 wins point = (1-pp2serve) for p1
+    const pp=srv?pp1serve:(1-pp2serve);
+    if(simGame(pp)) a++; else b++;
+    srv=!srv;
+    if(a>=6&&a-b>=2) return {w:1,g:a+b};
+    if(b>=6&&b-a>=2) return {w:0,g:a+b};
+    if(a===6&&b===6){
+      const tbPP=(pp1serve+(1-pp2serve))/2;
+      const tw=simTB(tbPP);
+      return {w:tw,g:a+b+1};
+    }
+  }
+  return {w:Math.random()<pp1serve?1:0,g:12};
+}
+function simMatch(matchWinProb,n=5000,pp1serve=null,pp2serve=null){
+  // Convert match win prob → point probs if real stats not available
+  // Empirical relationship: higher match win prob → higher serve point prob
+  const approxPP=p=>Math.min(0.74,Math.max(0.26,0.5+(p-0.5)*0.38));
+  const p1sp=pp1serve!=null?pp1serve:approxPP(matchWinProb);
+  const p2sp=pp2serve!=null?pp2serve:approxPP(1-matchWinProb);
+
+  let wins=0;
+  let s20=0,s21=0,s02=0,s12=0;
+  const games=[];
+  for(let i=0;i<n;i++){
+    let p1s=0,p2s=0,g=0;
+    while(p1s<2&&p2s<2){
+      const s=simSet(p1sp,p2sp);
+      g+=s.g;
+      if(s.w===1) p1s++; else p2s++;
+    }
+    games.push(g);
+    if(p1s>p2s){wins++;if(p2s===0)s20++;else s21++;}
+    else{if(p1s===0)s02++;else s12++;}
+  }
+  games.sort((a,b)=>a-b);
+  const pw=wins/n;
+  return{
+    p1:+(pw*100).toFixed(1),p2:+((1-pw)*100).toFixed(1),
+    med:games[Math.floor(n/2)],
+    p10:games[Math.floor(n*0.1)],p90:games[Math.floor(n*0.9)],
+    s20:+(s20/n*100).toFixed(1),s21:+(s21/n*100).toFixed(1),
+    s02:+(s02/n*100).toFixed(1),s12:+(s12/n*100).toFixed(1),
+    sig:Math.abs(pw-0.5)>0.10,
+    realPP:pp1serve!=null,
+  };
+}
+
+// ═══════════════════════════════════════════
+// EDGE DETECTION
+// ═══════════════════════════════════════════
+function implProb(dec){return dec>1?+(1/dec*100).toFixed(1):null;}
+function calcEdge(modelPct,dec){
+  if(!modelPct||!dec||dec<=1) return null;
+  const m=modelPct/100,impl=1/dec;
+  const e=m-impl;
+  return{
+    edge:+(e*100).toFixed(1),impl:+(impl*100).toFixed(1),
+    value:e>0.03,strong:e>0.06,
+    kelly:e>0?+(e/impl*25).toFixed(1):0,
+  };
+}
+
+// ═══════════════════════════════════════════
+// DATA FETCHERS — Jeff Sackmann GitHub
+// ═══════════════════════════════════════════
+const ATP_BASE='https://raw.githubusercontent.com/JeffSackmann/tennis_atp/master';
+const WTA_BASE='https://raw.githubusercontent.com/JeffSackmann/tennis_wta/master';
+
+async function fetchMatches(tour,year){
+  const base=tour==='ATP'?ATP_BASE:WTA_BASE;
+  const pfx=tour==='ATP'?'atp':'wta';
+  const txt=await cfetch(`${base}/${pfx}_matches_${year}.csv`);
+  return parseCSV(txt||'');
+}
+async function fetchRankings(tour){
+  const base=tour==='ATP'?ATP_BASE:WTA_BASE;
+  const pfx=tour==='ATP'?'atp':'wta';
+  const txt=await cfetch(`${base}/${pfx}_rankings_current.csv`);
+  return parseCSV(txt||'');
+}
+async function fetchPlayersMeta(tour){
+  const base=tour==='ATP'?ATP_BASE:WTA_BASE;
+  const pfx=tour==='ATP'?'atp':'wta';
+  const txt=await cfetch(`${base}/${pfx}_players.csv`);
+  return parseCSV(txt||'');
+}
+
+async function loadData(tour,topN,onProg){
+  const years=[2023,2024,2025];
+  let all=[];
+  for(let i=0;i<years.length;i++){
+    onProg(`📥 ${tour} ${years[i]} (${i+1}/3)…`,(i+1)/years.length*38);
+    const m=await fetchMatches(tour,years[i]);
+    all.push(...m);
+  }
+  onProg(`🧮 Elo por superficie (${all.length.toLocaleString()} partidos)…`,43);
+  const ratings=buildElo(all);
+
+  onProg(`📋 Rankings actuales ${tour}…`,48);
+  const rankings=await fetchRankings(tour);
+  onProg(`👤 Perfiles jugadores…`,52);
+  const meta=await fetchPlayersMeta(tour);
+  const metaMap={};
+  for(const p of meta) metaMap[p.player_id]=p;
+
+  // ranking map
+  const rankMap={};
+  const seen=new Set();
+  const sorted=[...rankings].sort((a,b)=>a.ranking_date<b.ranking_date?1:-1);
+  for(const r of sorted){
+    if(!seen.has(r.player)&&parseInt(r.rank)<=(topN+120)){
+      rankMap[r.player]={rank:parseInt(r.rank),pts:parseInt(r.points||0)};
+      seen.add(r.player);
+    }
+  }
+
+  // h2h map
+  const h2h={};
+  for(const m of all){
+    const w=m.winner_id,l=m.loser_id;
+    if(!w||!l) continue;
+    const k=[w,l].sort().join('_');
+    if(!h2h[k]) h2h[k]={p1:w,p2:l,w1:0,w2:0,matches:[]};
+    if(w===h2h[k].p1) h2h[k].w1++; else h2h[k].w2++;
+    h2h[k].matches.push({date:m.tourney_date,surf:m.surface,round:m.round,score:m.score,winner:w,tourney:m.tourney_name});
+  }
+
+  // build tourney list from matches (for Torneos tab)
+  const tourneyMap={};
+  for(const m of all){
+    const id=m.tourney_id||'';
+    if(!id) continue;
+    if(!tourneyMap[id]){
+      tourneyMap[id]={
+        id, name:m.tourney_name||id,
+        date:m.tourney_date||'',
+        surface:m.surface||'Hard',
+        level:m.tourney_level||'',
+        country:'',
+      };
+    }
+    // keep most recent date
+    if((m.tourney_date||'')>tourneyMap[id].date) tourneyMap[id].date=m.tourney_date;
+  }
+
+  onProg(`🔗 Combinando ${Object.keys(ratings).length} jugadores…`,58);
+  const players=[];
+  for(const [id,p] of Object.entries(ratings)){
+    const rk=rankMap[id];
+    if(!rk||rk.rank>topN) continue;
+    const m=metaMap[id]||{};
+    const name=p.name||`${m.name_first||''} ${m.name_last||''}`.trim()||`P${id}`;
+    const surfs=['Hard','Clay','Grass','Carpet'];
+    const bestSurf=surfs.reduce((a,b)=>(p[a]||0)>(p[b]||0)?a:b);
+    players.push({
+      id,name,rank:rk.rank,pts:rk.pts,
+      country:m.ioc||'',hand:m.hand||'',height:m.height?parseInt(m.height):null,
+      ...p, bestSurf,
+      winPct:p.count>0?+(p.wins/p.count*100).toFixed(1):50,
+    });
+  }
+  players.sort((a,b)=>a.rank-b.rank);
+  return{players,h2h,tourneys:Object.values(tourneyMap),totalMatches:all.length};
+}
+
+// ═══════════════════════════════════════════
+// SOFASCORE — partidos reales del día (sin key, pública)
+// ═══════════════════════════════════════════
+// ═══════════════════════════════════════════
+// PARTIDOS DEL DÍA — Odds API /events endpoint (sin cuotas, solo fixture)
+// Funciona en file:// y https:// sin restricciones CORS
+// ═══════════════════════════════════════════
+async function fetchESPNToday(){
+  // Usa el endpoint /events de Odds API — NO consume quota (gratuito)
+  // Solo trae fixtures sin cuotas, pero sirve para saber qué partidos hay hoy
+  const KEY='507e497bc731d05e37c5ada9edcea593';
+  const BASE='https://api.the-odds-api.com/v4';
+  const result={tournaments:{},errors:[]};
+  const today=new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Madrid'});
+  const tomorrow=new Date(Date.now()+86400000).toLocaleDateString('sv-SE',{timeZone:'Europe/Madrid'});
+
+  // Reutilizar la lista de sports activos ya obtenida (si está disponible)
+  // Si no, hacer 1 llamada a /sports/ (también gratis)
+  let activeSports=[];
+  try{
+    const r=await fetch(`${BASE}/sports/?apiKey=${KEY}`);
+    if(r.ok){
+      const all=await r.json();
+      activeSports=all.filter(s=>s.group==='Tennis'&&s.active).map(s=>s.key);
+    }
+  }catch(e){result.errors.push('sports: '+e.message);}
+
+  if(activeSports.length===0){
+    result.errors.push('Sin sports activos — quota agotada o error de red');
+    window._espnResult=result;
+    return result;
+  }
+
+  // /events NO consume quota — pedir para cada sport activo
+  for(const sport of activeSports){
+    try{
+      const url=`${BASE}/sports/${sport}/events?apiKey=${KEY}&dateFormat=iso`;
+      const r=await fetch(url);
+      if(!r.ok){result.errors.push(`${sport} events: HTTP ${r.status}`);continue;}
+      const events=await r.json();
+      if(!Array.isArray(events)) continue;
+      const filtered=events.filter(ev=>{
+        const d=ev.commence_time?.slice(0,10);
+        return d===today||d===tomorrow;
+      });
+      if(filtered.length===0) continue;
+      const isWTA=sport.includes('wta');
+      for(const ev of filtered){
+        const tid=sport;
+        const tourName=ev.sport_title||sport.replace('tennis_atp_','').replace('tennis_wta_','')
+          .replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase())+` (${isWTA?'WTA':'ATP'})`;
+        if(!result.tournaments[tid]){
+          result.tournaments[tid]={id:tid,name:tourName,sport:isWTA?'WTA':'ATP',category:isWTA?'WTA':'ATP',matches:[]};
+        }
+        result.tournaments[tid].matches.push({
+          id:`ev_${ev.id}`,_source:'odds_events',
+          home_team:ev.home_team||'',away_team:ev.away_team||'',
+          home_slug:'',away_slug:'',
+          commence_time:ev.commence_time||new Date().toISOString(),
+          sport_title:ev.sport_title||tourName,
+          _sport:sport,status:'notstarted',bookmakers:[],
+        });
+      }
+    }catch(e){result.errors.push(`${sport}: ${e.message}`);}
+  }
+
+  const tourList=Object.values(result.tournaments);
+  console.log('🎾 /events (sin quota):',tourList.length,'torneos →',
+    tourList.map(t=>`${t.sport} ${t.name}(${t.matches.length})`).join(' | '));
+  window._espnResult=result;
+  return result;
+}
+
+async function fetchOddsTennis(){
+  const KEY='507e497bc731d05e37c5ada9edcea593';
+  const BASE='https://api.the-odds-api.com/v4';
+  const games=[];
+  const _debug={sportsFound:[],sportsQueried:[],sportsWithGames:[],errors:[],totalRaw:0};
+
+  // UNA SOLA llamada para descubrir sports activos — no malgastar quota
+  // /sports/ NO cuenta como petición de quota (es gratis)
+  let activeSports=[];
+  try{
+    const r=await fetch(`${BASE}/sports/?apiKey=${KEY}`);
+    if(r.ok){
+      const all=await r.json();
+      const tennis=all.filter(s=>s.group==='Tennis');
+      _debug.sportsFound=tennis.map(s=>({key:s.key,active:s.active,title:s.title}));
+      // Solo los ACTIVOS — estos sí tienen partidos esta semana
+      activeSports=tennis.filter(s=>s.active).map(s=>s.key);
+      console.log('🎾 Sports activos esta semana:', activeSports);
+    } else {
+      _debug.errors.push(`sports HTTP ${r.status}`);
+    }
+  }catch(e){
+    _debug.errors.push('sports: '+e.message);
+  }
+
+  // Fallback mínimo si /sports/ falla
+  if(activeSports.length===0){
+    activeSports=['tennis_atp','tennis_wta'];
+  }
+  _debug.sportsQueried=activeSports;
+
+  // Una petición por sport activo (normalmente 1-4 en total, no 20+)
+  for(const s of activeSports){
+    try{
+      const url=`${BASE}/sports/${s}/odds/?apiKey=${KEY}&regions=eu&markets=h2h&oddsFormat=decimal&dateFormat=iso`;
+      const r=await fetch(url);
+      if(!r.ok){
+        _debug.errors.push(`${s}: HTTP ${r.status}`);
+        continue;
+      }
+      const d=await r.json();
+      if(Array.isArray(d)&&d.length>0){
+        _debug.sportsWithGames.push({sport:s,count:d.length});
+        d.forEach(g=>games.push({...g,_sport:s}));
+      }
+    }catch(e){
+      _debug.errors.push(`${s}: ${e.message}`);
+    }
+  }
+
+  _debug.totalRaw=games.length;
+
+  // Deduplicar por id
+  const seen=new Set();
+  const result=games.filter(g=>{
+    if(seen.has(g.id)) return false;
+    seen.add(g.id);
+    return true;
+  });
+
+  window._oddsDebug=_debug;
+  console.log('🎾 Odds API:', activeSports.length,'sports activos,',result.length,'partidos');
+  window._oddsMatches=result;
+  return result;
+}
+
+// ═══════════════════════════════════════════
+// SMALL UI COMPONENTS
+// ═══════════════════════════════════════════
+function SurfBadge({surf,sz=10}){
+  const s=normSurf(surf);
+  return<span style={{fontSize:sz,fontWeight:700,padding:'2px 7px',borderRadius:3,
+    background:SURF_CLR[s]+'22',color:SURF_CLR[s],fontFamily:'Syne Mono',whiteSpace:'nowrap'}}>
+    {SURF_ICO[s]} {s}
+  </span>;
+}
+function LvlBadge({level,sz=9}){
+  if(!level) return null;
+  const c=LVL_CLR[level]||C.mutedL;
+  const l=LVL_LABEL[level]||level;
+  return<span style={{fontSize:sz,fontWeight:700,padding:'2px 7px',borderRadius:3,
+    background:c+'22',color:c,fontFamily:'Syne Mono',whiteSpace:'nowrap'}}>{l}</span>;
+}
+function Flag({cc,sz=13}){
+  if(!cc||cc.length!==3) return null;
+  try{const f=cc.split('').map(c=>String.fromCodePoint(c.charCodeAt(0)-65+0x1F1E6)).join('');
+  return<span style={{fontSize:sz}}>{f}</span>;}catch{return null;}
+}
+function Dots({form,max=10}){
+  const r=(form||[]).slice(-max);
+  return<div style={{display:'flex',gap:2}}>{r.map((v,i)=><div key={i} style={{width:5,height:5,borderRadius:'50%',background:v?C.lime:C.rose}}/>)}</div>;
+}
+function Bar({val,max,color,h=5}){
+  const pct=max>0?Math.min(100,val/max*100):0;
+  return<div style={{height:h,background:C.border,borderRadius:2,flex:1,overflow:'hidden'}}>
+    <div style={{width:pct+'%',height:'100%',background:color,borderRadius:2,transition:'width .4s'}}/>
+  </div>;
+}
+function StatRow({label,val,unit='%',good,ok,color}){
+  if(val==null) return null;
+  const c=color||(val>=good?C.lime:val>=ok?C.amber:C.rose);
+  return<div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
+    <span style={{fontSize:11,color:C.mutedL}}>{label}</span>
+    <span style={{fontFamily:'Syne Mono',fontSize:11,fontWeight:700,color:c}}>{typeof val==='number'?val.toFixed(1):val}{unit}</span>
+  </div>;
+}
+
+// ═══════════════════════════════════════════
+// PLAYER CARD
+// ═══════════════════════════════════════════
+function PlayerCard({p,onSelect,selected}){
+  if(!p) return null;
+  const sel=selected?.id===p.id;
+  const sc=SURF_CLR[p.bestSurf]||C.lime;
+  const d=deriveStats(p,p.bestSurf);
+  return<div onClick={()=>onSelect(p)} className={sel?'glow':''} style={{
+    background:sel?C.s3:C.s2,border:`1px solid ${sel?C.lime:C.border}`,
+    borderRadius:10,padding:'10px 12px',cursor:'pointer',transition:'all .18s',position:'relative',
+  }}>
+    <div style={{position:'absolute',top:8,right:10,fontFamily:'Syne Mono',fontSize:9,color:C.muted}}>#{p.rank}</div>
+    <div style={{display:'flex',gap:10,marginBottom:8,alignItems:'flex-start'}}>
+      <div style={{textAlign:'center',minWidth:44}}>
+        <div style={{width:40,height:40,borderRadius:'50%',border:`3px solid ${sc}`,
+          display:'flex',alignItems:'center',justifyContent:'center',background:sc+'11'}}>
+          <span style={{fontFamily:'Syne Mono',fontSize:9,fontWeight:700,color:sc}}>{Math.round(p[p.bestSurf]||p.overall)}</span>
+        </div>
+        <div style={{fontSize:8,color:sc,fontFamily:'Syne Mono',marginTop:2}}>{p.bestSurf.slice(0,3)}</div>
+      </div>
+      <div style={{flex:1,minWidth:0}}>
+        <div style={{display:'flex',gap:5,alignItems:'center',marginBottom:2}}>
+          <Flag cc={p.country} sz={12}/>
+          <span style={{fontWeight:700,fontSize:12,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{p.name}</span>
+        </div>
+        <div style={{display:'flex',gap:5,flexWrap:'wrap',marginBottom:4}}>
+          <SurfBadge surf={p.bestSurf} sz={8}/>
+          {p.hand&&<span style={{fontSize:8,color:C.mutedL,fontFamily:'Syne Mono'}}>{p.hand==='R'?'RH':'LH'}</span>}
+          {p.pts>0&&<span style={{fontSize:8,color:C.amber,fontFamily:'Syne Mono'}}>{p.pts.toLocaleString()}pts</span>}
+        </div>
+        <Dots form={p.formAll} max={10}/>
+      </div>
+    </div>
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:3}}>
+      {['Hard','Clay','Grass'].map(s=>(
+        <div key={s} style={{display:'flex',gap:4,alignItems:'center'}}>
+          <span style={{fontSize:7,color:SURF_CLR[s],fontFamily:'Syne Mono',minWidth:24}}>{s.slice(0,3)}</span>
+          <Bar val={(p[s]||1500)-1200} max={800} color={SURF_CLR[s]} h={4}/>
+          <span style={{fontSize:7,color:C.mutedL,fontFamily:'Syne Mono',minWidth:26}}>{Math.round(p[s]||1500)}</span>
+        </div>
+      ))}
+      <div style={{display:'flex',gap:4,alignItems:'center'}}>
+        <span style={{fontSize:7,color:C.mutedL,fontFamily:'Syne Mono',minWidth:24}}>W%</span>
+        <Bar val={p.winPct||50} max={100} color={C.lime} h={4}/>
+        <span style={{fontSize:7,color:C.lime,fontFamily:'Syne Mono',minWidth:26}}>{p.winPct||50}%</span>
+      </div>
+    </div>
+    {d.fstWon!=null&&<div style={{marginTop:5,padding:'3px 6px',background:C.s1,borderRadius:4,
+      display:'flex',gap:8,fontSize:8,fontFamily:'Syne Mono',color:C.mutedL}}>
+      <span>1st:<span style={{color:C.sky}}>{d.fstWon}%</span></span>
+      {d.bpSave!=null&&<span>BPsv:<span style={{color:d.bpSave>65?C.lime:C.amber}}>{d.bpSave}%</span></span>}
+      {d.bpConv!=null&&<span>BPcv:<span style={{color:d.bpConv>40?C.lime:C.amber}}>{d.bpConv}%</span></span>}
+      {d.fatigue14>3&&<span style={{color:C.orange}}>🏃{d.fatigue14}p/14d</span>}
+    </div>}
+  </div>;
+}
+
+// ═══════════════════════════════════════════
+// PLAYER DETAIL
+// ═══════════════════════════════════════════
+function PlayerDetail({p,allPlayers,h2hMap}){
+  const [rivQ,setRivQ]=useState('');
+  const [rival,setRival]=useState(null);
+  const [surf,setSurf]=useState('Hard');
+  const [showList,setShowList]=useState(false);
+  if(!p) return null;
+  const d=deriveStats(p,surf);
+
+  const rivMatches=useMemo(()=>{
+    if(!rival) return null;
+    const k=[p.id,rival.id].sort().join('_');
+    const raw=h2hMap[k];
+    if(!raw) return null;
+    const isFirst=raw.p1===p.id;
+    return{p1w:isFirst?raw.w1:raw.w2,p2w:isFirst?raw.w2:raw.w1,matches:(raw.matches||[]).slice(-12).reverse()};
+  },[p,rival,h2hMap]);
+
+  const pred=useMemo(()=>rival?predictMatch(p,rival,surf,rivMatches?{p1Wins:rivMatches.p1w,p2Wins:rivMatches.p2w}:null):null,[p,rival,surf,rivMatches]);
+  const rivResults=useMemo(()=>{
+    if(!rivQ||rivQ.length<2) return [];
+    return allPlayers.filter(x=>x.id!==p.id&&x.name?.toLowerCase().includes(rivQ.toLowerCase())).slice(0,6);
+  },[rivQ,allPlayers,p]);
+
+  return<div className="fade" style={{background:C.s1,border:`1px solid ${C.border}`,borderRadius:12,padding:16}}>
+    <div style={{display:'flex',gap:12,alignItems:'flex-start',marginBottom:14}}>
+      <div style={{flex:1}}>
+        <div style={{display:'flex',gap:8,alignItems:'center',marginBottom:4}}>
+          <Flag cc={p.country} sz={20}/>
+          <h2 style={{fontFamily:'Syne',fontWeight:900,fontSize:20}}>{p.name}</h2>
+          <span style={{fontFamily:'Syne Mono',fontSize:13,color:C.amber}}>#{p.rank}</span>
+          {p.pts>0&&<span style={{fontFamily:'Syne Mono',fontSize:10,color:C.amber}}>{p.pts.toLocaleString()}pts</span>}
+        </div>
+        <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:6}}>
+          <SurfBadge surf={p.bestSurf}/>
+          {p.hand&&<span style={{fontSize:10,color:C.mutedL,fontFamily:'Syne Mono',padding:'2px 7px',background:C.s2,borderRadius:4}}>{p.hand==='R'?'Diestro':'Zurdo'}</span>}
+          {p.height&&<span style={{fontSize:10,color:C.mutedL,fontFamily:'Syne Mono'}}>{p.height}cm</span>}
+          <span style={{fontSize:10,color:C.mutedL,fontFamily:'Syne Mono'}}>{p.wins}W-{p.losses}L ({p.winPct}%)</span>
+          {d.fatigue14>0&&<span style={{fontSize:10,fontFamily:'Syne Mono',color:d.fatigue14>=5?C.rose:d.fatigue14>=3?C.orange:C.lime}}>
+            🏃 {d.fatigue14} partidos últimos 14d
+          </span>}
+        </div>
+        <div style={{display:'flex',gap:8,alignItems:'center'}}>
+          <span style={{fontSize:11,color:C.mutedL}}>Forma (20):</span>
+          <Dots form={p.formAll} max={20}/>
+          <span style={{fontFamily:'Syne Mono',fontSize:10,color:C.lime}}>{d.form10all||0}/10</span>
+        </div>
+      </div>
+    </div>
+
+    {/* Elo Grid */}
+    <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:6,marginBottom:12}}>
+      {[['Overall',p.overall,C.lime],['Hard',p.Hard,C.sky],['Clay',p.Clay,C.amber],['Grass',p.Grass,C.emerald]].map(([l,v,c])=>(
+        <div key={l} style={{background:C.s2,borderRadius:8,padding:'8px 10px',textAlign:'center',border:`1px solid ${l===p.bestSurf?c+'44':C.border}`}}>
+          <p style={{margin:0,fontSize:8,color:C.mutedL,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>{l}</p>
+          <p style={{margin:'3px 0 1px',fontWeight:900,fontSize:20,color:c,fontFamily:'Syne',lineHeight:1}}>{Math.round(v||ELO0)}</p>
+          <p style={{margin:0,fontSize:8,color:C.muted,fontFamily:'Syne Mono'}}>{p.sw[l]||0}W/{(p.sc[l]||0)-(p.sw[l]||0)}L</p>
+        </div>
+      ))}
+    </div>
+
+    {/* Surface form */}
+    {['Hard','Clay','Grass'].some(s=>(p['form'+s]||[]).length>=3)&&(
+      <div style={{background:C.s2,borderRadius:8,padding:'9px 12px',marginBottom:12}}>
+        <p style={{margin:'0 0 7px',fontSize:9,fontWeight:700,color:C.violet,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>📊 Forma por superficie (MEJORA 1)</p>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:6}}>
+          {['Hard','Clay','Grass'].map(s=>{
+            const sf=p['form'+s]||[];
+            if(sf.length<2) return<div key={s} style={{opacity:.3,fontSize:10,color:C.muted,fontFamily:'Syne Mono'}}>Sin datos {s}</div>;
+            const w10=sf.slice(-10).reduce((a,b)=>a+b,0);
+            const tot=Math.min(10,sf.length);
+            return<div key={s} style={{background:C.s1,borderRadius:6,padding:'6px 8px'}}>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:4}}>
+                <SurfBadge surf={s} sz={8}/>
+                <span style={{fontFamily:'Syne Mono',fontSize:11,fontWeight:700,color:w10/tot>=0.6?C.lime:w10/tot>=0.5?C.amber:C.rose}}>{w10}/{tot}</span>
+              </div>
+              <Dots form={sf} max={10}/>
+            </div>;
+          })}
+        </div>
+      </div>
+    )}
+
+    {/* Serve/Return Stats */}
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:12}}>
+      <div style={{background:C.s2,borderRadius:8,padding:'9px 12px'}}>
+        <p style={{margin:'0 0 7px',fontSize:9,fontWeight:700,color:C.sky,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>🎯 Saque</p>
+        <StatRow label="1er srv In" val={d.fstIn} good={65} ok={58}/>
+        <StatRow label="Pts 1er srv" val={d.fstWon} good={75} ok={68}/>
+        <StatRow label="Pts 2do srv" val={d.sndWon} good={56} ok={48}/>
+        <StatRow label="BP Salvados" val={d.bpSave} good={65} ok={55}/>
+        <StatRow label="Aces/svpt" val={d.acePct} good={8} ok={4}/>
+        {d.pServeWon!=null&&<StatRow label="P(srv won) real" val={d.pServeWon} unit="%" good={65} ok={58} color={C.lime}/>}
+      </div>
+      <div style={{background:C.s2,borderRadius:8,padding:'9px 12px'}}>
+        <p style={{margin:'0 0 7px',fontSize:9,fontWeight:700,color:C.emerald,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>🔄 Resto</p>
+        <StatRow label="BP Convertidos" val={d.bpConv} good={42} ok={32}/>
+        <StatRow label="Win% total" val={p.winPct} good={65} ok={55}/>
+        <StatRow label="Forma L5 surf" val={d.form5surf!=null?d.form5surf/5*100:null} good={70} ok={50}/>
+        <StatRow label="Forma L10 surf" val={d.form10surf!=null?d.form10surf/10*100:null} good={65} ok={50}/>
+        <StatRow label="Partidos L14d" val={d.fatigue14} unit="" good={0} ok={3}
+          color={d.fatigue14>=5?C.rose:d.fatigue14>=3?C.orange:C.lime}/>
+      </div>
+    </div>
+
+    {/* Predicción vs Rival */}
+    <div style={{background:C.s2,borderRadius:10,padding:'12px 14px'}}>
+      <p style={{margin:'0 0 9px',fontSize:9,fontWeight:700,color:C.violet,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>⚔️ Predicción vs rival</p>
+      <div style={{display:'flex',gap:6,marginBottom:8}}>
+        {['Hard','Clay','Grass'].map(s=>(
+          <button key={s} onClick={()=>setSurf(s)} style={{padding:'4px 10px',borderRadius:5,
+            border:`1px solid ${surf===s?SURF_CLR[normSurf(s)]:C.border}`,
+            background:surf===s?SURF_CLR[normSurf(s)]+'22':'transparent',
+            color:surf===s?SURF_CLR[normSurf(s)]:C.mutedL,fontWeight:700,fontSize:11}}>
+            {SURF_ICO[normSurf(s)]} {s}
+          </button>
+        ))}
+      </div>
+      <div style={{position:'relative',marginBottom:10}}>
+        <input value={rivQ} onChange={e=>{setRivQ(e.target.value);setRival(null);setShowList(true);}}
+          onFocus={()=>setShowList(true)}
+          placeholder="🔍 Buscar rival..."
+          style={{width:'100%',padding:'7px 10px',background:C.s1,border:`1px solid ${rival?C.lime:C.border}`,borderRadius:6,color:C.text,fontSize:12}}/>
+        {showList&&rivResults.length>0&&<div style={{position:'absolute',top:'100%',left:0,right:0,
+          background:C.s2,border:`1px solid ${C.border}`,borderRadius:8,zIndex:20,boxShadow:'0 8px 24px #000000aa',maxHeight:200,overflowY:'auto'}}>
+          {rivResults.map(x=>(
+            <div key={x.id} onClick={()=>{setRival(x);setRivQ(x.name);setShowList(false);}}
+              style={{padding:'7px 12px',cursor:'pointer',display:'flex',gap:8,alignItems:'center',fontSize:12,borderBottom:`1px solid ${C.border}33`}}>
+              <Flag cc={x.country}/><span style={{flex:1}}>{x.name}</span>
+              <span style={{color:C.muted,fontFamily:'Syne Mono',fontSize:10}}>#{x.rank}</span>
+            </div>
+          ))}
+        </div>}
+      </div>
+      {rivMatches&&<div style={{marginBottom:10,padding:'7px 10px',background:C.s1,borderRadius:7}}>
+        <p style={{margin:'0 0 5px',fontSize:10,color:C.violet,fontFamily:'Syne Mono'}}>
+          H2H: <span style={{color:C.lime,fontWeight:700}}>{p.name.split(' ').slice(-1)[0]} {rivMatches.p1w}</span>
+          {' – '}
+          <span style={{color:C.rose,fontWeight:700}}>{rivMatches.p2w} {rival?.name.split(' ').slice(-1)[0]}</span>
+        </p>
+        {rivMatches.matches.slice(0,5).map((m,i)=>(
+          <div key={i} style={{display:'flex',gap:6,fontSize:10,color:C.mutedL,marginBottom:2,fontFamily:'Syne Mono',flexWrap:'wrap'}}>
+            <span>{m.date}</span><SurfBadge surf={m.surf} sz={8}/><span>{m.round}</span>
+            <span style={{flex:1,color:m.winner===p.id?C.lime:C.rose,fontWeight:700}}>{m.score}</span>
+          </div>
+        ))}
+      </div>}
+      {pred&&<div>
+        <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8,marginBottom:8}}>
+          {[[p.name,pred.p1,'lime'],[rival?.name||'?',pred.p2,'rose']].map(([n,v,clr])=>(
+            <div key={n} style={{background:`linear-gradient(135deg,${C[clr]}11,transparent)`,
+              border:`1px solid ${C[clr]}33`,borderRadius:8,padding:'10px',textAlign:'center'}}>
+              <p style={{margin:0,fontSize:10,color:C[clr],fontFamily:'Syne Mono',fontWeight:700,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{n}</p>
+              <p style={{margin:'3px 0',fontWeight:900,fontSize:26,color:C[clr],fontFamily:'Syne',lineHeight:1}}>{v}%</p>
+              <p style={{margin:0,fontSize:9,color:C.muted,fontFamily:'Syne Mono'}}>MC: {pred.mc?.[clr==='lime'?'p1':'p2']}%</p>
+            </div>
+          ))}
+        </div>
+        {/* Data quality badges */}
+        <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:8}}>
+          {pred.usedRealPP&&<span style={{fontSize:9,padding:'2px 8px',borderRadius:3,background:C.lime+'22',color:C.lime,fontFamily:'Syne Mono'}}>✅ P(srv) real</span>}
+          {pred.usedSurfForm&&<span style={{fontSize:9,padding:'2px 8px',borderRadius:3,background:C.sky+'22',color:C.sky,fontFamily:'Syne Mono'}}>✅ Forma superficie</span>}
+          {(pred.fatigue1>3||pred.fatigue2>3)&&<span style={{fontSize:9,padding:'2px 8px',borderRadius:3,background:C.orange+'22',color:C.orange,fontFamily:'Syne Mono'}}>⚠️ Fatiga detectada</span>}
+        </div>
+        {pred.mc&&<div style={{background:C.s1,borderRadius:7,padding:'8px 10px'}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:4,textAlign:'center',marginBottom:6}}>
+            {[['2-0',pred.mc.s20,C.lime],['2-1',pred.mc.s21,C.amber],['0-2',pred.mc.s02,C.rose],['1-2',pred.mc.s12,C.amber],['Games',pred.mc.med,C.violet]]
+              .map(([l,v,c])=><div key={l}>
+                <p style={{margin:0,fontSize:8,color:C.muted,fontFamily:'Syne Mono'}}>{l}</p>
+                <p style={{margin:'2px 0 0',fontWeight:900,fontSize:14,color:c,fontFamily:'Syne',lineHeight:1}}>{v}{l!=='Games'?'%':''}</p>
+              </div>)}
+          </div>
+          <p style={{margin:0,fontSize:9,color:C.muted,fontFamily:'Syne Mono',textAlign:'center'}}>
+            Conf: <span style={{color:C.lime}}>{pred.conf}%</span>
+            {' · '}Elo surf:{pred.eloSf}% · Forma:{pred.formAdj>0?'+':''}{pred.formAdj}%
+            {pred.fatAdj!==0&&<span style={{color:C.orange}}> · Fat:{pred.fatAdj>0?'+':''}{pred.fatAdj}%</span>}
+            {pred.h2hAdj!==0&&<span> · H2H:{pred.h2hAdj>0?'+':''}{pred.h2hAdj}%</span>}
+          </p>
+          {pred.mc.sig&&<p style={{margin:'4px 0 0',fontSize:9,color:C.lime,fontFamily:'Syne Mono',textAlign:'center'}}>✅ Señal clara (&gt;10% del 50%)</p>}
+          {pred.mc.realPP&&<p style={{margin:'2px 0 0',fontSize:9,color:C.lime,fontFamily:'Syne Mono',textAlign:'center'}}>📡 MC con probabilidades de punto reales</p>}
+        </div>}
+      </div>}
+    </div>
+  </div>;
+}
+
+// ═══════════════════════════════════════════
+// MATCH CARD
+// ═══════════════════════════════════════════
+function MatchCard({match,atpPlayers,wtaPlayers}){
+  const all=[...(atpPlayers||[]),...(wtaPlayers||[])];
+  const home=match.home_team, away=match.away_team;
+  const books=match.bookmakers||[];
+  let hOdds=null,aOdds=null,bkName='';
+  const pref=['pinnacle','bet365','unibet','betfair','draftkings','williamhill'];
+  for(const bk of [...pref.map(k=>books.find(b=>b.key===k)),...books].filter(Boolean)){
+    const mkt=bk.markets?.find(m=>m.key==='h2h');
+    if(!mkt) continue;
+    const ho=mkt.outcomes?.find(o=>o.name===home);
+    const ao=mkt.outcomes?.find(o=>o.name===away);
+    if(ho&&ao){hOdds=ho.price;aOdds=ao.price;bkName=bk.title||bk.key;break;}
+  }
+  const tName=(match.sport_title||match._sport||'').toLowerCase();
+  const surface=tName.includes('clay')||tName.includes('roland')||tName.includes('french')?'Clay':
+                tName.includes('wimbledon')||tName.includes('grass')?'Grass':'Hard';
+  const findP=name=>{
+    if(!name) return null;
+    const nl=name.toLowerCase();
+    return all.find(p=>{
+      const pn=p.name?.toLowerCase()||'';
+      return pn===nl||pn.includes(nl)||nl.includes(pn)||nl.split(' ').some(pt=>pt.length>3&&pn.includes(pt));
+    });
+  };
+  const p1=findP(home), p2=findP(away);
+  const pred=p1&&p2?predictMatch(p1,p2,surface,null):null;
+  const hEdge=pred&&hOdds?calcEdge(pred.p1,hOdds):null;
+  const aEdge=pred&&aOdds?calcEdge(pred.p2,aOdds):null;
+  const bestEdge=hEdge&&aEdge?(hEdge.edge>aEdge.edge?hEdge:aEdge):(hEdge||aEdge);
+  const winner=pred?(pred.p1>pred.p2?home:away):null;
+  const winnerProb=pred?Math.max(pred.p1,pred.p2):null;
+  const dt=new Date(match.commence_time);
+  const hora=toSpainTime(match.commence_time);
+  const isLive=dt<new Date()&&dt>new Date(Date.now()-5*3600000);
+
+  return<div className="fade" style={{background:C.s1,border:`2px solid ${bestEdge?.strong?C.lime:bestEdge?.value?C.lime+'55':C.border}`,
+    borderRadius:12,padding:14,marginBottom:10}}>
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:10}}>
+      <div style={{display:'flex',gap:8,alignItems:'center'}}>
+        <span style={{fontSize:10,color:C.muted,fontFamily:'Syne Mono'}}>{hora} 🇪🇸</span>
+        {isLive&&<span style={{fontSize:8,fontWeight:700,padding:'1px 6px',borderRadius:3,background:C.rose+'33',color:C.rose,fontFamily:'Syne Mono'}}>● LIVE</span>}
+        <span style={{fontSize:10,color:C.mutedL,fontFamily:'Syne Mono'}}>{match.sport_title||''}</span>
+        <SurfBadge surf={surface} sz={9}/>
+      </div>
+      {bestEdge?.value&&<div style={{padding:'3px 10px',borderRadius:4,background:bestEdge.strong?C.lime+'22':C.lime+'11',border:`1px solid ${C.lime}44`}}>
+        <span style={{fontSize:9,fontWeight:700,color:C.lime,fontFamily:'Syne Mono'}}>
+          {bestEdge.strong?'🔥 EDGE FUERTE':'✅ VALOR'} +{bestEdge.edge}% · Kelly {bestEdge.kelly}%
+        </span>
+      </div>}
+    </div>
+
+    <div className="match-grid" style={{display:'grid',gridTemplateColumns:'1fr auto 1fr',gap:8,alignItems:'center',marginBottom:8}}>
+      {/* P1 */}
+      <div style={{background:C.s2,borderRadius:8,padding:'10px 12px'}}>
+        <div style={{display:'flex',gap:5,alignItems:'center',marginBottom:3}}>
+          {p1&&<Flag cc={p1.country} sz={12}/>}
+          <span style={{fontWeight:700,fontSize:13}}>{home}</span>
+        </div>
+        {p1&&<div style={{marginBottom:3}}>
+          <span style={{fontSize:10,color:C.mutedL,fontFamily:'Syne Mono'}}>#{p1.rank} · Elo:{Math.round(p1[normSurf(surface)]||p1.overall)}</span>
+          <div style={{marginTop:3}}><Dots form={p1.formAll} max={8}/></div>
+        </div>}
+        {hOdds&&<div style={{marginTop:5,display:'flex',gap:6,alignItems:'center'}}>
+          <span style={{fontSize:14,fontFamily:'Syne Mono',fontWeight:700,color:hEdge?.value?C.lime:C.text}}>{hOdds.toFixed(2)}</span>
+          <span style={{fontSize:10,color:C.muted,fontFamily:'Syne Mono'}}>{implProb(hOdds)}%</span>
+          {hEdge&&<span style={{fontSize:10,fontFamily:'Syne Mono',fontWeight:700,color:hEdge.value?C.lime:C.rose}}>
+            {hEdge.edge>0?'+':''}{hEdge.edge}%
+          </span>}
+        </div>}
+      </div>
+
+      {/* VS center */}
+      <div style={{textAlign:'center',padding:'0 4px',minWidth:60}}>
+        {pred?<div>
+          <div style={{fontFamily:'Syne Mono',fontSize:13,fontWeight:700,color:pred.p1>=pred.p2?C.lime:C.mutedL}}>{pred.p1}%</div>
+          <div style={{height:1,background:C.border,width:40,margin:'4px auto'}}/>
+          <div style={{fontFamily:'Syne Mono',fontSize:13,fontWeight:700,color:pred.p2>pred.p1?C.lime:C.mutedL}}>{pred.p2}%</div>
+          <div style={{fontSize:9,color:C.muted,fontFamily:'Syne Mono',marginTop:3}}>{pred.conf}%</div>
+        </div>:<span style={{fontSize:16,color:C.muted}}>vs</span>}
+      </div>
+
+      {/* P2 */}
+      <div style={{background:C.s2,borderRadius:8,padding:'10px 12px'}}>
+        <div style={{display:'flex',gap:5,alignItems:'center',marginBottom:3}}>
+          {p2&&<Flag cc={p2.country} sz={12}/>}
+          <span style={{fontWeight:700,fontSize:13}}>{away}</span>
+        </div>
+        {p2&&<div style={{marginBottom:3}}>
+          <span style={{fontSize:10,color:C.mutedL,fontFamily:'Syne Mono'}}>#{p2.rank} · Elo:{Math.round(p2[normSurf(surface)]||p2.overall)}</span>
+          <div style={{marginTop:3}}><Dots form={p2.formAll} max={8}/></div>
+        </div>}
+        {aOdds&&<div style={{marginTop:5,display:'flex',gap:6,alignItems:'center'}}>
+          <span style={{fontSize:14,fontFamily:'Syne Mono',fontWeight:700,color:aEdge?.value?C.lime:C.text}}>{aOdds.toFixed(2)}</span>
+          <span style={{fontSize:10,color:C.muted,fontFamily:'Syne Mono'}}>{implProb(aOdds)}%</span>
+          {aEdge&&<span style={{fontSize:10,fontFamily:'Syne Mono',fontWeight:700,color:aEdge.value?C.lime:C.rose}}>
+            {aEdge.edge>0?'+':''}{aEdge.edge}%
+          </span>}
+        </div>}
+      </div>
+    </div>
+
+    {/* WINNER PICK BOX */}
+    {pred&&<div style={{marginBottom:8}}>
+      <div style={{
+        background:`linear-gradient(135deg,${pred.p1>pred.p2?C.lime:C.rose}18,${C.s2})`,
+        border:`2px solid ${pred.p1>pred.p2?C.lime:C.rose}66`,
+        borderRadius:8,padding:'10px 16px',marginBottom:6,
+        display:'flex',alignItems:'center',gap:12,
+      }}>
+        <span style={{fontSize:22}}>🏆</span>
+        <div style={{flex:1}}>
+          <p style={{margin:0,fontSize:9,color:C.muted,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>
+            PICK DEL MODELO — GANADOR PREDICHO
+          </p>
+          <p style={{margin:'3px 0 0',fontWeight:900,fontSize:20,fontFamily:'Syne',lineHeight:1,
+            color:pred.p1>pred.p2?C.lime:C.rose}}>
+            {winner}
+          </p>
+          <p style={{margin:'2px 0 0',fontSize:10,color:C.mutedL,fontFamily:'Syne Mono'}}>
+            {pred.p1>pred.p2?away:home} tiene {Math.min(pred.p1,pred.p2)}% de ganar
+          </p>
+        </div>
+        <div style={{textAlign:'right'}}>
+          <p style={{margin:0,fontWeight:900,fontSize:32,fontFamily:'Syne',lineHeight:1,
+            color:pred.p1>pred.p2?C.lime:C.rose}}>{winnerProb}%</p>
+          <p style={{margin:'2px 0 0',fontSize:9,color:C.muted,fontFamily:'Syne Mono'}}>confianza {pred.conf}%</p>
+        </div>
+      </div>
+      {/* MC row */}
+      {pred.mc&&<div className="mc-row" style={{background:C.s2,borderRadius:7,padding:'7px 10px',display:'flex',gap:10,flexWrap:'wrap',alignItems:'center'}}>
+        <span style={{fontSize:9,color:C.muted,fontFamily:'Syne Mono'}}>MC 5k{pred.mc.realPP?' 📡real':' ~approx'}:</span>
+        <span style={{fontSize:10,fontFamily:'Syne Mono',color:C.lime}}>2-0: {pred.mc.s20}%</span>
+        <span style={{fontSize:10,fontFamily:'Syne Mono',color:C.amber}}>2-1: {pred.mc.s21}%</span>
+        <span style={{fontSize:10,fontFamily:'Syne Mono',color:C.rose}}>0-2: {pred.mc.s02}%</span>
+        <span style={{fontSize:10,fontFamily:'Syne Mono',color:C.violet}}>Games: {pred.mc.med} ({pred.mc.p10}-{pred.mc.p90})</span>
+        {pred.mc.sig&&<span style={{fontSize:9,color:C.lime,fontFamily:'Syne Mono'}}>✅ señal clara</span>}
+        {pred.usedSurfForm&&<span style={{fontSize:9,color:C.sky,fontFamily:'Syne Mono'}}>📊 forma surf</span>}
+        {(pred.fatigue1>3||pred.fatigue2>3)&&<span style={{fontSize:9,color:C.orange,fontFamily:'Syne Mono'}}>⚠️ fatiga</span>}
+      </div>}
+    </div>}
+  </div>;
+}
+
+// ═══════════════════════════════════════════
+// CALENDARIO ATP/WTA (torneos activos por semana)
+// ═══════════════════════════════════════════
+const ATP_CALENDAR=[
+  // Semana de hierba previa a Wimbledon 2025 (9-15 jun)
+  {key:'halle25',       name:'Terra Wortmann Open (Halle)',        sport:'ATP', surface:'Grass', level:'ATP 500',    start:'2025-06-09', end:'2025-06-15'},
+  {key:'queens25',      name:'cinch Championships (Queens Club)',   sport:'ATP', surface:'Grass', level:'ATP 500',    start:'2025-06-09', end:'2025-06-15'},
+  {key:'stuttgart25',   name:'BOSS OPEN (Stuttgart)',               sport:'ATP', surface:'Grass', level:'ATP 250',    start:'2025-06-09', end:'2025-06-15'},
+  {key:'birmingham25',  name:"Rothesay Classic (Birmingham)",       sport:'WTA', surface:'Grass', level:'WTA 250',    start:'2025-06-09', end:'2025-06-15'},
+  {key:'rosmalen25',    name:"Libéma Open ('s-Hertogenbosch)",      sport:'WTA', surface:'Grass', level:'WTA 250',    start:'2025-06-09', end:'2025-06-15'},
+  // Semana de hierba previa a Wimbledon 2026 (8-14 jun)
+  {key:'halle26',       name:'Terra Wortmann Open (Halle)',        sport:'ATP', surface:'Grass', level:'ATP 500',    start:'2026-06-08', end:'2026-06-15'},
+  {key:'queens26',      name:'cinch Championships (Queens Club)',   sport:'ATP', surface:'Grass', level:'ATP 500',    start:'2026-06-08', end:'2026-06-15'},
+  {key:'stuttgart26',   name:'BOSS OPEN (Stuttgart)',               sport:'ATP', surface:'Grass', level:'ATP 250',    start:'2026-06-08', end:'2026-06-15'},
+  {key:'birmingham26',  name:"Rothesay Classic (Birmingham)",       sport:'WTA', surface:'Grass', level:'WTA 250',    start:'2026-06-08', end:'2026-06-15'},
+  {key:'rosmalen26',    name:"Libéma Open ('s-Hertogenbosch)",      sport:'WTA', surface:'Grass', level:'WTA 250',    start:'2026-06-08', end:'2026-06-15'},
+  // Segunda semana de hierba 2026 (15-21 jun)
+  {key:'eastbourne26',  name:'Rothesay International (Eastbourne)', sport:'WTA', surface:'Grass', level:'WTA 500',    start:'2026-06-15', end:'2026-06-21'},
+  {key:'queens2_26',    name:"Rothesay Open (Nottingham)",          sport:'WTA', surface:'Grass', level:'WTA 250',    start:'2026-06-15', end:'2026-06-21'},
+  // Wimbledon
+  {key:'wimbledon25m',  name:'Wimbledon (ATP)',                     sport:'ATP', surface:'Grass', level:'Grand Slam', start:'2025-06-30', end:'2025-07-13'},
+  {key:'wimbledon25w',  name:'Wimbledon (WTA)',                     sport:'WTA', surface:'Grass', level:'Grand Slam', start:'2025-06-30', end:'2025-07-13'},
+  {key:'wimbledon26m',  name:'Wimbledon (ATP)',                     sport:'ATP', surface:'Grass', level:'Grand Slam', start:'2026-06-29', end:'2026-07-12'},
+  {key:'wimbledon26w',  name:'Wimbledon (WTA)',                     sport:'WTA', surface:'Grass', level:'Grand Slam', start:'2026-06-29', end:'2026-07-12'},
+  // Roland Garros
+  {key:'rg25m',  name:'Roland Garros (ATP)',  sport:'ATP', surface:'Clay', level:'Grand Slam', start:'2025-05-25', end:'2025-06-08'},
+  {key:'rg25w',  name:'Roland Garros (WTA)',  sport:'WTA', surface:'Clay', level:'Grand Slam', start:'2025-05-25', end:'2025-06-08'},
+  {key:'rg26m',  name:'Roland Garros (ATP)',  sport:'ATP', surface:'Clay', level:'Grand Slam', start:'2026-05-24', end:'2026-06-07'},
+  {key:'rg26w',  name:'Roland Garros (WTA)',  sport:'WTA', surface:'Clay', level:'Grand Slam', start:'2026-05-24', end:'2026-06-07'},
+  // US Open
+  {key:'uso25m', name:'US Open (ATP)',  sport:'ATP', surface:'Hard', level:'Grand Slam', start:'2025-08-25', end:'2025-09-07'},
+  {key:'uso25w', name:'US Open (WTA)',  sport:'WTA', surface:'Hard', level:'Grand Slam', start:'2025-08-25', end:'2025-09-07'},
+  {key:'uso26m', name:'US Open (ATP)',  sport:'ATP', surface:'Hard', level:'Grand Slam', start:'2026-08-24', end:'2026-09-06'},
+  {key:'uso26w', name:'US Open (WTA)',  sport:'WTA', surface:'Hard', level:'Grand Slam', start:'2026-08-24', end:'2026-09-06'},
+];
+
+function getActiveCalendarTourneys(){
+  const today=new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Madrid'});
+  return ATP_CALENDAR.filter(t=>t.start<=today&&t.end>=today);
+}
+
+// ═══════════════════════════════════════════
+// MATCH CARD — sin cuotas (solo predicción)
+// ═══════════════════════════════════════════
+function MatchCardNoOdds({p1,p2,surface,name1,name2}){
+  const pred=p1&&p2?predictMatch(p1,p2,surface,null):null;
+  const winner=pred?(pred.p1>pred.p2?p1:p2):null;
+  const winnerProb=pred?Math.max(pred.p1,pred.p2):null;
+  const n1=p1?.name||name1||'Jugador 1';
+  const n2=p2?.name||name2||'Jugador 2';
+  return<div className="fade" style={{background:C.s1,border:`2px solid ${C.border}`,borderRadius:12,padding:14,marginBottom:10}}>
+    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8}}>
+      <div style={{display:'flex',gap:6,alignItems:'center'}}>
+        <SurfBadge surf={surface} sz={9}/>
+        <span style={{fontSize:9,fontFamily:'Syne Mono',color:C.amber,padding:'1px 6px',borderRadius:3,background:C.amber+'18',border:`1px solid ${C.amber}33`}}>
+          📡 ESPN · Sin líneas
+        </span>
+      </div>
+    </div>
+    <div className="match-grid" style={{display:'grid',gridTemplateColumns:'1fr auto 1fr',gap:8,alignItems:'center',marginBottom:8}}>
+      <div style={{background:C.s2,borderRadius:8,padding:'10px 12px',opacity:p1?1:0.6}}>
+        <div style={{display:'flex',gap:5,alignItems:'center',marginBottom:3}}>
+          {p1&&<Flag cc={p1.country} sz={12}/>}
+          <span style={{fontWeight:700,fontSize:13}}>{n1}</span>
+        </div>
+        {p1
+          ?<><span style={{fontSize:10,color:C.mutedL,fontFamily:'Syne Mono'}}>#{p1.rank} · Elo:{Math.round(p1.overall)}</span>
+          <div style={{marginTop:3}}><Dots form={p1.formAll} max={8}/></div></>
+          :<span style={{fontSize:9,color:C.muted,fontFamily:'Syne Mono'}}>No en base de datos</span>
+        }
+      </div>
+      <div style={{textAlign:'center'}}>
+        <span style={{fontSize:14,fontWeight:900,color:C.mutedL,fontFamily:'Syne Mono'}}>VS</span>
+      </div>
+      <div style={{background:C.s2,borderRadius:8,padding:'10px 12px',opacity:p2?1:0.6}}>
+        <div style={{display:'flex',gap:5,alignItems:'center',marginBottom:3}}>
+          {p2&&<Flag cc={p2.country} sz={12}/>}
+          <span style={{fontWeight:700,fontSize:13}}>{n2}</span>
+        </div>
+        {p2
+          ?<><span style={{fontSize:10,color:C.mutedL,fontFamily:'Syne Mono'}}>#{p2.rank} · Elo:{Math.round(p2.overall)}</span>
+          <div style={{marginTop:3}}><Dots form={p2.formAll} max={8}/></div></>
+          :<span style={{fontSize:9,color:C.muted,fontFamily:'Syne Mono'}}>No en base de datos</span>
+        }
+      </div>
+    </div>
+    {pred&&<div style={{background:C.s2,borderRadius:8,padding:'10px 12px',display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:8}}>
+      <div>
+        <p style={{margin:0,fontWeight:700,fontSize:13,color:C.lime}}>🤖 {winner?.name}</p>
+        <p style={{margin:'2px 0 0',fontSize:10,color:C.mutedL,fontFamily:'Syne Mono'}}>
+          {pred.p1>pred.p2?n2:n1} tiene {Math.min(pred.p1,pred.p2)}% de ganar
+        </p>
+      </div>
+      <div style={{textAlign:'right'}}>
+        <p style={{margin:0,fontWeight:900,fontSize:28,fontFamily:'Syne',lineHeight:1,color:C.lime}}>{winnerProb}%</p>
+        <p style={{margin:'2px 0 0',fontSize:9,color:C.muted,fontFamily:'Syne Mono'}}>confianza {pred.conf}%</p>
+      </div>
+    </div>}
+    {!pred&&<div style={{background:C.s2,borderRadius:8,padding:'10px 12px',textAlign:'center'}}>
+      <p style={{fontSize:11,color:C.muted,fontFamily:'Syne Mono'}}>⚠️ Jugadores no encontrados en la base de datos ATP/WTA</p>
+    </div>}
+  </div>;
+}
+
+// ═══════════════════════════════════════════
+// TAB: TORNEOS DEL DÍA
+// ═══════════════════════════════════════════
+function TorneosTab({atpData,wtaData,matches,espnData}){
+  const [tour,setTour]=useState('both');
+  const [selectedTourney,setSelectedTourney]=useState(null);
+
+  const allPlayers=useMemo(()=>[...(atpData?.players||[]),...(wtaData?.players||[])],[atpData,wtaData]);
+  const findP=useCallback(name=>{
+    if(!name) return null;
+    const nl=name.toLowerCase();
+    return allPlayers.find(p=>{
+      const pn=p.name?.toLowerCase()||'';
+      return pn===nl||pn.includes(nl)||nl.includes(pn)||
+        nl.split(' ').some(pt=>pt.length>3&&pn.includes(pt));
+    });
+  },[allPlayers]);
+
+  function determineSurface(name){
+    const n=(name||'').toLowerCase();
+    if(n.includes('clay')||n.includes('roland')||n.includes('french')||n.includes('barcelona')||n.includes('madrid')||n.includes('rome')||n.includes('monte')) return 'Clay';
+    if(n.includes('wimbledon')||n.includes('grass')||n.includes('halle')||n.includes('queens')||n.includes('queen')||
+       n.includes('stuttgart')||n.includes('hertogenbosch')||n.includes('rosmalen')||n.includes('eastbourne')||n.includes('birmingham')||n.includes('boss open')) return 'Grass';
+    return 'Hard';
+  }
+  function determineLevel(name){
+    const n=(name||'').toLowerCase();
+    if(n.includes('french open')||n.includes('roland')||n.includes('wimbledon')||n.includes('us open')||n.includes('australian')) return 'Grand Slam';
+    if(n.includes('masters 1000')||n.includes('atp masters')||n.includes('1000')) return 'Masters 1000';
+    if(n.includes('wta 1000')) return 'WTA 1000';
+    if(n.includes('queens')||n.includes('halle')||n.includes('500')) return 'ATP 500';
+    if(n.includes('wta 500')||n.includes('eastbourne')||n.includes('birmingham')) return 'WTA 500';
+    if(n.includes('250')||n.includes('hertogenbosch')||n.includes('rosmalen')||n.includes('stuttgart')||n.includes('boss open')) return 'ATP 250';
+    if(n.includes('wta 250')) return 'WTA 250';
+    return 'Tour';
+  }
+
+  // Build tourney map from API matches (with odds)
+  const oddsMap=useMemo(()=>{
+    const map={};
+    if(!matches||matches.length===0) return map;
+    for(const m of matches){
+      const isWTA=m._sport?.includes('wta');
+      const title=m.sport_title||m._sport||'Unknown';
+      const tourKey=m.competition_id||(()=>{
+        const parts=title.split(' - ');
+        return parts.length>1?parts.slice(1).join('-').trim()+'::'+m._sport:m._sport||'unknown';
+      })();
+      const surf=determineSurface(title+' '+(m._sport||''));
+      if(!map[tourKey]) map[tourKey]={
+        key:tourKey, name:title, sport:isWTA?'WTA':'ATP',
+        surface:surf, matches:[], level:determineLevel(title), edgeCount:0, hasOdds:true,
+      };
+      const books=m.bookmakers||[];
+      let hOdds=null,aOdds=null;
+      for(const bk of books){
+        const mkt=bk.markets?.find(x=>x.key==='h2h');
+        if(!mkt) continue;
+        const ho=mkt.outcomes?.find(o=>o.name===m.home_team);
+        const ao=mkt.outcomes?.find(o=>o.name===m.away_team);
+        if(ho&&ao){hOdds=ho.price;aOdds=ao.price;break;}
+      }
+      const p1=findP(m.home_team),p2=findP(m.away_team);
+      if(p1&&p2&&hOdds&&aOdds){
+        const pred=predictMatch(p1,p2,surf,null);
+        if(pred){
+          const hEdge=pred.p1/100-1/hOdds;
+          const aEdge=pred.p2/100-1/aOdds;
+          if(hEdge>0.03||aEdge>0.03) map[tourKey].edgeCount++;
+        }
+      }
+      map[tourKey].matches.push(m);
+    }
+    return map;
+  },[matches,findP]);
+
+  // Merge: Odds API (con cuotas) + Sofascore (partidos reales del día sin cuotas)
+  const todayTourneys=useMemo(()=>{
+    const result=[];
+    // 1. Torneos con cuotas reales (Odds API)
+    for(const t of Object.values(oddsMap)) result.push(t);
+
+    // 2. Torneos de Sofascore — partidos reales, sin cuotas
+    if(espnData?.tournaments){
+      function isAlreadyCovered(tourName,sport){
+        const n=tourName.toLowerCase();
+        return result.some(t=>{
+          if(t.sport!==sport) return false;
+          const tn=t.name.toLowerCase();
+          // Match if they share at least one significant word (>4 chars)
+          return n.split(/\s+/).some(w=>w.length>4&&tn.includes(w));
+        });
+      }
+      for(const sfTour of Object.values(espnData.tournaments)){
+        if(isAlreadyCovered(sfTour.name,sfTour.sport)) continue;
+        const surf=determineSurface(sfTour.name+' '+sfTour.category);
+        const realMatches=sfTour.matches.map(m=>{
+          const p1=findP(m.home_team)||findP((m.home_slug||'').replace(/-/g,' '));
+          const p2=findP(m.away_team)||findP((m.away_slug||'').replace(/-/g,' '));
+          return{...m,_p1resolved:p1,_p2resolved:p2};
+        });
+        // Only show tourney if at least some players could be resolved
+        const resolved=realMatches.filter(m=>m._p1resolved||m._p2resolved);
+        if(resolved.length===0&&realMatches.length>0){
+          // Keep anyway but flag as unresolved
+          result.push({
+            key:`sf_${sfTour.id}`,name:sfTour.name,sport:sfTour.sport,
+            surface:surf,level:determineLevel(sfTour.name),
+            matches:realMatches,edgeCount:0,hasOdds:false,_source:'espn',
+            _unresolved:true,
+          });
+        } else if(realMatches.length>0){
+          result.push({
+            key:`sf_${sfTour.id}`,name:sfTour.name,sport:sfTour.sport,
+            surface:surf,level:determineLevel(sfTour.name),
+            matches:realMatches,edgeCount:0,hasOdds:false,_source:'espn',
+          });
+        }
+      }
+    }
+    return result.sort((a,b)=>{
+      const lo={'Grand Slam':0,'Masters 1000':1,'WTA 1000':1,'ATP 500':2,'WTA 500':2,'ATP 250':3,'WTA 250':3};
+      return (lo[a.level]||9)-(lo[b.level]||9);
+    });
+  },[oddsMap,espnData,findP,atpData,wtaData]);
+
+  // FALLBACK: si no hay ningún torneo de API ni ESPN, usar calendario hardcoded
+  const calendarFallbackTourneys=useMemo(()=>{
+    if(todayTourneys.length>0) return todayTourneys;
+    const cal=getActiveCalendarTourneys();
+    if(cal.length===0) return [];
+    return cal.map(c=>{
+      const players=(c.sport==='WTA'?wtaData:atpData)?.players||[];
+      const surf=c.surface;
+      // Top players seeded realistically: 1v16, 2v15, etc.
+      const top=players.filter(p=>p.rank&&p.rank<=64).sort((a,b)=>a.rank-b.rank).slice(0,16);
+      const matches=[];
+      for(let i=0;i<Math.floor(top.length/2)&&matches.length<8;i++){
+        const p1=top[i], p2=top[top.length-1-i];
+        if(p1&&p2) matches.push({
+          id:`cal_${c.key}_${i}`,_synthetic:true,
+          home_team:p1.name,away_team:p2.name,
+          _p1resolved:p1,_p2resolved:p2,
+          sport_title:c.name,_sport:`tennis_${c.sport.toLowerCase()}`,
+          commence_time:new Date().toISOString(),bookmakers:[],status:'notstarted',
+        });
+      }
+      return{
+        key:c.key,name:c.name,sport:c.sport,
+        surface:surf,level:c.level,
+        matches,edgeCount:0,hasOdds:false,_source:'calendar',
+      };
+    }).filter(t=>t.matches.length>0)
+      .sort((a,b)=>{
+        const lo={'Grand Slam':0,'Masters 1000':1,'WTA 1000':1,'ATP 500':2,'WTA 500':2,'ATP 250':3,'WTA 250':3};
+        return (lo[a.level]||9)-(lo[b.level]||9);
+      });
+  },[todayTourneys,atpData,wtaData]);
+
+  const allTourneys=todayTourneys.length>0?todayTourneys:calendarFallbackTourneys;
+
+  const filtered=useMemo(()=>{
+    const src=allTourneys;
+    if(tour==='both') return src;
+    return src.filter(t=>t.sport===tour);
+  },[allTourneys,tour]);
+
+  const selectedMatches=useMemo(()=>{
+    if(!selectedTourney) return null;
+    return selectedTourney.matches;
+  },[selectedTourney]);
+
+  if(!matches) return<div style={{textAlign:'center',padding:'4rem'}}>
+    <div style={{width:36,height:36,border:`3px solid ${C.border}`,borderTop:`3px solid ${C.lime}`,borderRadius:'50%',margin:'0 auto 16px'}} className="spin"/>
+    <p style={{color:C.lime,fontFamily:'Syne Mono',fontSize:13}}>Cargando torneos…</p>
+  </div>;
+
+  if(allTourneys.length===0){
+    const dbg=window._oddsDebug||null;
+    const allMatchesCount=(matches||[]).length;
+
+    // Diagnóstico rápido inline sin recargar
+    const [probing,setProbing]=useState(false);
+    const [probeResult,setProbeResult]=useState(null);
+    const runProbe=async()=>{
+      setProbing(true);
+      try{
+        const KEY='507e497bc731d05e37c5ada9edcea593';
+        const r=await fetch(`https://api.the-odds-api.com/v4/sports/?apiKey=${KEY}`);
+        const status=r.status;
+        if(!r.ok){const t=await r.text();setProbeResult({ok:false,status,body:t.slice(0,300)});setProbing(false);return;}
+        const all=await r.json();
+        const tennis=all.filter(s=>s.group==='Tennis');
+        const active=tennis.filter(s=>s.active);
+        setProbeResult({ok:true,status,total:all.length,tennis:tennis.length,active:active.length,
+          activeSports:active.map(s=>s.key),
+          inactiveTennis:tennis.filter(s=>!s.active).map(s=>s.key),
+        });
+      }catch(e){setProbeResult({ok:false,status:'error',body:e.message});}
+      setProbing(false);
+    };
+
+    return<div style={{padding:'2rem 1rem',maxWidth:720,margin:'0 auto'}}>
+      <div style={{textAlign:'center',marginBottom:20}}>
+        <p style={{fontSize:44,marginBottom:8}}>🏟️</p>
+        <p style={{color:C.mutedL,fontFamily:'Syne Mono',fontSize:13,lineHeight:2}}>
+          No hay torneos activos hoy con líneas disponibles<br/>
+          <span style={{color:C.muted,fontSize:11}}>Las líneas aparecen durante semanas de torneos ATP/WTA<br/>(Roland Garros, Wimbledon, US Open, Masters 1000…)</span>
+        </p>
+      </div>
+
+      {/* Panel diagnóstico */}
+      <div style={{background:C.s1,border:`1px solid ${C.border}`,borderRadius:12,padding:16,fontFamily:'Syne Mono',fontSize:11}}>
+        <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:14}}>
+          <span style={{color:C.amber,fontWeight:700,fontSize:12}}>🔍 Diagnóstico Odds API</span>
+          <button onClick={runProbe} disabled={probing} style={{
+            padding:'5px 14px',borderRadius:6,border:`1px solid ${C.lime}44`,
+            background:C.lime+'18',color:C.lime,fontSize:10,fontWeight:700,cursor:'pointer'}}>
+            {probing?'Consultando…':'▶ Test API ahora'}
+          </button>
+        </div>
+
+        {/* Info de la última carga */}
+        <div style={{background:C.s2,borderRadius:8,padding:'10px 12px',marginBottom:12}}>
+          <p style={{color:C.muted,fontSize:10,marginBottom:6}}>Última carga de página:</p>
+          <div style={{display:'flex',gap:16,flexWrap:'wrap'}}>
+            <span>Partidos totales: <span style={{color:allMatchesCount>0?C.lime:C.rose,fontWeight:700}}>{allMatchesCount}</span></span>
+            {dbg&&<>
+              <span>Sports tenis encontrados: <span style={{color:dbg.sportsFound?.length>0?C.lime:C.rose,fontWeight:700}}>{dbg.sportsFound?.length||0}</span></span>
+              <span>Sports activos: <span style={{color:(dbg.sportsFound?.filter(s=>s.active)||[]).length>0?C.lime:C.rose,fontWeight:700}}>{(dbg.sportsFound?.filter(s=>s.active)||[]).length}</span></span>
+              <span>Con cuotas: <span style={{color:dbg.sportsWithGames?.length>0?C.lime:C.rose,fontWeight:700}}>{dbg.sportsWithGames?.length||0}</span></span>
+            </>}
+          </div>
+          {dbg?.errors?.length>0&&<div style={{marginTop:8}}>
+            {dbg.errors.map((e,i)=><div key={i} style={{color:C.rose,fontSize:10,marginTop:2}}>⚠️ {e}</div>)}
+          </div>}
+          {dbg?.sportsWithGames?.length>0&&<div style={{marginTop:8}}>
+            {dbg.sportsWithGames.map(s=><div key={s.sport} style={{color:C.lime,fontSize:10,marginTop:2}}>✅ {s.sport}: {s.count} partidos</div>)}
+          </div>}
+          {dbg?.sportsFound?.length>0&&<div style={{marginTop:8,display:'flex',flexWrap:'wrap',gap:4}}>
+            {dbg.sportsFound.map(s=>(
+              <span key={s.key} style={{fontSize:9,padding:'2px 6px',borderRadius:4,
+                background:s.active?C.lime+'22':C.s3,
+                color:s.active?C.lime:C.muted,border:`1px solid ${s.active?C.lime+'33':C.border}`}}>
+                {s.active?'●':'○'} {s.key}
+              </span>
+            ))}
+          </div>}
+        </div>
+
+        {/* Resultado del probe en vivo */}
+        {probeResult&&<div style={{background:probeResult.ok?C.lime+'0a':C.rose+'0a',border:`1px solid ${probeResult.ok?C.lime+'33':C.rose+'33'}`,borderRadius:8,padding:'10px 12px'}}>
+          <p style={{color:probeResult.ok?C.lime:C.rose,fontWeight:700,marginBottom:8,fontSize:11}}>
+            {probeResult.ok?'✅ API accesible':'❌ Error de API'} · HTTP {probeResult.status}
+          </p>
+          {probeResult.ok?<>
+            <div style={{display:'flex',gap:16,flexWrap:'wrap',marginBottom:8}}>
+              <span>Total sports: <span style={{color:C.sky,fontWeight:700}}>{probeResult.total}</span></span>
+              <span>Sports tenis: <span style={{color:C.sky,fontWeight:700}}>{probeResult.tennis}</span></span>
+              <span>Tenis activos: <span style={{color:probeResult.active>0?C.lime:C.rose,fontWeight:700}}>{probeResult.active}</span></span>
+            </div>
+            {probeResult.active>0?<>
+              <p style={{color:C.lime,marginBottom:6}}>Sports activos ahora mismo:</p>
+              <div style={{display:'flex',flexWrap:'wrap',gap:4}}>
+                {probeResult.activeSports.map(k=>(
+                  <span key={k} style={{fontSize:9,padding:'3px 8px',borderRadius:4,background:C.lime+'22',color:C.lime,border:`1px solid ${C.lime+'44'}`}}>✅ {k}</span>
+                ))}
+              </div>
+            </>:<>
+              <p style={{color:C.amber,marginBottom:6}}>⚠️ No hay sports de tenis activos esta semana.</p>
+              {probeResult.inactiveTennis?.length>0&&<div style={{display:'flex',flexWrap:'wrap',gap:4}}>
+                {probeResult.inactiveTennis.map(k=>(
+                  <span key={k} style={{fontSize:9,padding:'3px 8px',borderRadius:4,background:C.s2,color:C.muted,border:`1px solid ${C.border}`}}>○ {k}</span>
+                ))}
+              </div>}
+            </>}
+          </>:<>
+            <p style={{color:C.rose,fontSize:10}}>{probeResult.body}</p>
+            {probeResult.status===401&&<p style={{color:C.amber,marginTop:6,fontSize:10}}>→ API key inválida o expirada.</p>}
+            {probeResult.status===429&&<p style={{color:C.amber,marginTop:6,fontSize:10}}>→ Límite de peticiones alcanzado. Espera unos minutos.</p>}
+          </>}
+        </div>}
+      </div>
+    </div>;
+  }
+
+  const LVL_MAP={'Grand Slam':C.lime,'Masters 1000':C.amber,'WTA 1000':C.amber,'ATP 500':C.sky,'WTA 500':C.sky,'ATP 250':C.violet,'WTA 250':C.violet,'Tour':C.mutedL};
+
+  return<div>
+    {/* Header */}
+    <div style={{marginBottom:16}}>
+      <h2 style={{fontFamily:'Syne',fontWeight:900,fontSize:22,marginBottom:4}}>🏟️ Torneos del día</h2>
+      <p style={{fontSize:11,color:C.muted,fontFamily:'Syne Mono'}}>Selecciona un torneo para ver todos sus partidos con predicciones del modelo</p>
+    </div>
+
+    {/* Controls */}
+    <div style={{display:'flex',gap:8,marginBottom:16,flexWrap:'wrap',alignItems:'center'}}>
+      <div style={{display:'flex',background:C.s2,borderRadius:8,padding:3,border:`1px solid ${C.border}`}}>
+        {[['both','🎾 Todos'],['ATP','ATP'],['WTA','WTA']].map(([v,l])=>(
+          <button key={v} onClick={()=>{setTour(v);setSelectedTourney(null);}} style={{padding:'6px 14px',borderRadius:6,border:'none',
+            background:tour===v?C.lime+'22':'transparent',color:tour===v?C.lime:C.mutedL,fontWeight:700,fontSize:12,transition:'all .15s'}}>
+            {l}
+          </button>
+        ))}
+      </div>
+      <span style={{fontSize:11,color:C.muted,fontFamily:'Syne Mono',marginLeft:'auto'}}>
+        {filtered.length} torneo{filtered.length!==1?'s':''} activos
+      </span>
+    </div>
+
+    {/* ESPN debug — muestra categorías recibidas para diagnosticar torneos perdidos */}
+    {espnData&&<details style={{marginBottom:12,background:C.s2,borderRadius:8,border:`1px solid ${C.border}`}}>
+      <summary style={{padding:'7px 12px',cursor:'pointer',fontSize:10,color:C.muted,fontFamily:'Syne Mono',userSelect:'none'}}>
+        📡 ESPN debug — {Object.keys(espnData.tournaments||{}).length} torneos cargados · expandir para ver categorías
+      </summary>
+      <div style={{padding:'8px 12px',borderTop:`1px solid ${C.border}`,fontFamily:'Syne Mono',fontSize:9}}>
+        <p style={{color:C.muted,marginBottom:6}}>Torneos recibidos (incluye ATP, WTA y excluye ITF/Challenger):</p>
+        {Object.values(espnData.tournaments||{}).map(t=>(
+          <div key={t.id} style={{display:'flex',gap:8,marginBottom:3,color:C.mutedL}}>
+            <span style={{color:t.sport==='WTA'?C.rose:C.sky,fontWeight:700,minWidth:28}}>{t.sport}</span>
+            <span style={{color:C.text}}>{t.name}</span>
+            <span style={{color:C.muted}}>({t.matches.length} partidos)</span>
+            <span style={{color:C.violet,fontSize:8}}>cat: {t.category}</span>
+          </div>
+        ))}
+        {espnData.errors?.length>0&&espnData.errors.map((e,i)=>(
+          <div key={i} style={{color:C.rose,marginTop:4}}>⚠️ {e}</div>
+        ))}
+        {Object.keys(espnData.tournaments||{}).length===0&&
+          <p style={{color:C.rose}}>Sin torneos — revisa consola (F12) para ver window._espnResult</p>}
+      </div>
+    </details>}
+
+    <div style={{display:'grid',gridTemplateColumns:'280px 1fr',gap:16,alignItems:'start'}}>
+      {/* Tourney list */}
+      <div style={{display:'flex',flexDirection:'column',gap:8}}>
+        {filtered.map(t=>{
+          const isSel=selectedTourney?.key===t.key;
+          const lc=LVL_MAP[t.level]||C.lime;
+          return<div key={t.key} onClick={()=>setSelectedTourney(isSel?null:t)}
+            className={isSel?'glow':''}
+            style={{background:isSel?C.s3:C.s2,border:`2px solid ${isSel?C.lime:t.hasOdds===false?C.amber+'44':C.border}`,
+              borderRadius:12,padding:'14px 16px',cursor:'pointer',transition:'all .18s',
+              opacity:t.hasOdds===false?0.8:1}}>
+            <div style={{display:'flex',gap:6,alignItems:'center',marginBottom:6,flexWrap:'wrap'}}>
+              <span style={{fontSize:9,fontWeight:700,padding:'2px 8px',borderRadius:4,
+                background:lc+'22',color:lc,fontFamily:'Syne Mono',textTransform:'uppercase'}}>{t.level}</span>
+              <span style={{fontSize:9,fontWeight:700,padding:'2px 6px',borderRadius:4,
+                background:t.sport==='WTA'?C.rose+'22':C.sky+'22',
+                color:t.sport==='WTA'?C.rose:C.sky,fontFamily:'Syne Mono'}}>{t.sport}</span>
+              {t.hasOdds===false&&<span style={{fontSize:8,fontWeight:700,padding:'1px 5px',borderRadius:3,
+                background:C.amber+'22',color:C.amber,fontFamily:'Syne Mono',marginLeft:'auto'}}>Sin líneas</span>}
+            </div>
+            <p style={{margin:'0 0 6px',fontWeight:700,fontSize:14,fontFamily:'Syne'}}>{t.name}</p>
+            <div style={{display:'flex',gap:8,alignItems:'center'}}>
+              <SurfBadge surf={t.surface} sz={9}/>
+              {t.hasOdds!==false&&<span style={{fontSize:11,color:C.muted,fontFamily:'Syne Mono'}}>{t.matches.length} partidos</span>}
+              {t.hasOdds===false&&<span style={{fontSize:10,color:C.amber,fontFamily:'Syne Mono'}}>Solo predicciones</span>}
+              {t.edgeCount>0&&<span style={{fontSize:9,fontWeight:700,padding:'2px 6px',borderRadius:4,
+                background:C.lime+'22',color:C.lime,fontFamily:'Syne Mono',marginLeft:'auto'}}>
+                🔥 {t.edgeCount} con valor
+              </span>}
+            </div>
+          </div>;
+        })}
+      </div>
+
+      {/* Matches panel */}
+      <div>
+        {!selectedTourney&&<div style={{background:C.s1,border:`1px solid ${C.border}`,borderRadius:12,padding:48,textAlign:'center'}}>
+          <p style={{fontSize:48,marginBottom:12}}>🏟️</p>
+          <p style={{color:C.mutedL,fontFamily:'Syne Mono',fontSize:13,lineHeight:2}}>
+            Selecciona un torneo de la izquierda<br/>para ver sus partidos con predicciones<br/>y detección de valor
+          </p>
+        </div>}
+        {selectedTourney&&<div className="fade">
+          {/* Tourney header */}
+          <div style={{background:`linear-gradient(135deg,${C.s2},${C.s3})`,border:`1px solid ${C.border}`,
+            borderRadius:12,padding:'14px 18px',marginBottom:12}}>
+            <div style={{display:'flex',gap:8,alignItems:'center',marginBottom:6,flexWrap:'wrap'}}>
+              <h2 style={{fontFamily:'Syne',fontWeight:900,fontSize:20}}>{selectedTourney.name}</h2>
+              <span style={{fontSize:10,fontWeight:700,padding:'3px 10px',borderRadius:5,
+                background:(LVL_MAP[selectedTourney.level]||C.lime)+'22',
+                color:LVL_MAP[selectedTourney.level]||C.lime,fontFamily:'Syne Mono'}}>
+                {selectedTourney.level}
+              </span>
+            </div>
+            <div style={{display:'flex',gap:10,alignItems:'center',flexWrap:'wrap'}}>
+              <SurfBadge surf={selectedTourney.surface}/>
+              <span style={{fontSize:11,fontWeight:700,padding:'2px 8px',borderRadius:4,
+                background:selectedTourney.sport==='WTA'?C.rose+'22':C.sky+'22',
+                color:selectedTourney.sport==='WTA'?C.rose:C.sky,fontFamily:'Syne Mono'}}>
+                {selectedTourney.sport}
+              </span>
+              {selectedTourney.hasOdds===false
+                ?<span style={{fontSize:11,color:C.amber,fontFamily:'Syne Mono'}}>
+                  {selectedTourney._source==='calendar'
+                    ?'📅 Sin cuotas disponibles · Predicciones del modelo'
+                    :'📡 Partidos reales · Sin líneas de apuestas'}
+                </span>
+                :<span style={{fontSize:11,color:C.muted,fontFamily:'Syne Mono'}}>
+                  {selectedTourney.matches.length} partidos con líneas en vivo
+                </span>
+              }
+            </div>
+          </div>
+          {/* Match cards */}
+          {selectedTourney.hasOdds===false
+            ?selectedTourney.matches.length===0
+              ?<div style={{padding:32,textAlign:'center',color:C.muted,fontFamily:'Syne Mono',fontSize:12}}>
+                No hay partidos registrados para hoy en este torneo
+              </div>
+              :selectedTourney.matches.map(m=>{
+                const p1=m._p1resolved||findP(m.home_team);
+                const p2=m._p2resolved||findP(m.away_team);
+                return<MatchCardNoOdds key={m.id} p1={p1} p2={p2}
+                  surface={selectedTourney.surface}
+                  name1={m.home_team} name2={m.away_team}/>;
+              })
+            :selectedTourney.matches.map(m=>(
+                <MatchCard key={m.id} match={m}
+                  atpPlayers={atpData?.players}
+                  wtaPlayers={wtaData?.players}/>
+              ))
+          }
+        </div>}
+      </div>
+    </div>
+  </div>;
+}
+
+// ═══════════════════════════════════════════
+// TAB: RANKINGS
+// ═══════════════════════════════════════════
+function RankingsTab({atpData,wtaData}){
+  const [tour,setTour]=useState('ATP');
+  const [sort,setSort]=useState('rank');
+  const [search,setSearch]=useState('');
+  const [selected,setSelected]=useState(null);
+  const data=(tour==='ATP'?atpData:wtaData)?.players||[];
+  const h2hMap=(tour==='ATP'?atpData:wtaData)?.h2h||{};
+
+  const filtered=useMemo(()=>{
+    let l=[...data];
+    if(search.length>1) l=l.filter(p=>p.name?.toLowerCase().includes(search.toLowerCase())||p.country?.toLowerCase().includes(search.toLowerCase()));
+    if(sort==='elo') l.sort((a,b)=>(b.overall||0)-(a.overall||0));
+    else if(sort==='hard') l.sort((a,b)=>(b.Hard||0)-(a.Hard||0));
+    else if(sort==='clay') l.sort((a,b)=>(b.Clay||0)-(a.Clay||0));
+    else if(sort==='grass') l.sort((a,b)=>(b.Grass||0)-(a.Grass||0));
+    else if(sort==='form') l.sort((a,b)=>(b.formAll?.slice(-10).reduce((x,y)=>x+y,0)||0)-(a.formAll?.slice(-10).reduce((x,y)=>x+y,0)||0));
+    else if(sort==='winpct') l.sort((a,b)=>(b.winPct||0)-(a.winPct||0));
+    else l.sort((a,b)=>a.rank-b.rank);
+    return l;
+  },[data,search,sort]);
+
+  return<div>
+    <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:14,alignItems:'center'}}>
+      <div style={{display:'flex',background:C.s2,borderRadius:8,padding:3,border:`1px solid ${C.border}`}}>
+        {[['ATP','🎾 ATP (300)',C.sky],['WTA','🎀 WTA (150)',C.rose]].map(([t,l,c])=>(
+          <button key={t} onClick={()=>{setTour(t);setSelected(null);}} style={{padding:'6px 14px',borderRadius:6,border:'none',
+            background:tour===t?c+'22':'transparent',color:tour===t?c:C.mutedL,fontWeight:700,fontSize:12,transition:'all .15s'}}>
+            {l}
+          </button>
+        ))}
+      </div>
+      <select value={sort} onChange={e=>setSort(e.target.value)} style={{padding:'6px 10px',background:C.s2,border:`1px solid ${C.border}`,borderRadius:6,color:C.text,fontSize:12,fontFamily:'Syne Mono'}}>
+        <option value="rank">Ranking ATP/WTA</option>
+        <option value="elo">Elo Overall</option>
+        <option value="hard">Elo Hard</option>
+        <option value="clay">Elo Clay</option>
+        <option value="grass">Elo Grass</option>
+        <option value="form">Forma L10</option>
+        <option value="winpct">Win %</option>
+      </select>
+      <input value={search} onChange={e=>setSearch(e.target.value)}
+        placeholder="🔍 Nombre o país..."
+        style={{padding:'6px 12px',background:C.s2,border:`1px solid ${C.border}`,borderRadius:6,color:C.text,fontSize:12,minWidth:180}}/>
+      <span style={{fontSize:10,color:C.muted,fontFamily:'Syne Mono'}}>{filtered.length} jugadores</span>
+    </div>
+    <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,alignItems:'start'}}>
+      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:7,maxHeight:'78vh',overflowY:'auto',paddingRight:4}}>
+        {filtered.slice(0,80).map(p=><PlayerCard key={p.id} p={p} onSelect={setSelected} selected={selected}/>)}
+      </div>
+      <div style={{position:'sticky',top:72}}>
+        {selected
+          ?<PlayerDetail p={selected} allPlayers={filtered} h2hMap={h2hMap}/>
+          :<div style={{background:C.s1,border:`1px solid ${C.border}`,borderRadius:12,padding:40,textAlign:'center'}}>
+            <p style={{fontSize:48,marginBottom:12}}>🎾</p>
+            <p style={{color:C.mutedL,fontSize:13,fontFamily:'Syne Mono',lineHeight:2}}>
+              Selecciona un jugador<br/>para ver su perfil completo<br/>y simular predicciones
+            </p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>;
+}
+
+// ═══════════════════════════════════════════
+// TAB: PARTIDOS (all matches)
+// ═══════════════════════════════════════════
+function MatchesTab({atpData,wtaData,matches}){
+  const [filter,setFilter]=useState('all');
+  const filtered=useMemo(()=>{
+    if(!matches) return [];
+    if(filter==='atp') return matches.filter(m=>m._sport?.includes('atp'));
+    if(filter==='wta') return matches.filter(m=>m._sport?.includes('wta'));
+    return matches;
+  },[matches,filter]);
+
+  if(!matches) return<div style={{textAlign:'center',padding:'5rem'}}>
+    <div style={{width:40,height:40,border:`3px solid ${C.border}`,borderTop:`3px solid ${C.lime}`,borderRadius:'50%',margin:'0 auto 16px'}} className="spin"/>
+    <p style={{color:C.lime,fontFamily:'Syne Mono'}}>Buscando líneas…</p>
+  </div>;
+  if(filtered.length===0) return<div style={{textAlign:'center',padding:'5rem'}}>
+    <p style={{fontSize:56,marginBottom:16}}>🎾</p>
+    <p style={{color:C.mutedL,fontFamily:'Syne Mono',fontSize:13,lineHeight:2}}>
+      No hay partidos con líneas disponibles ahora<br/>
+      <span style={{color:C.muted,fontSize:11}}>Las líneas aparecen durante semanas de torneos<br/>(Roland Garros, Wimbledon, US Open, Masters 1000…)</span>
+    </p>
+  </div>;
+
+  return<div>
+    <div className="chip-scroll" style={{display:'flex',gap:8,marginBottom:14,flexWrap:'wrap',alignItems:'center'}}>
+      {[['all','Todos'],['atp','ATP'],['wta','WTA']].map(([v,l])=>(
+        <button key={v} onClick={()=>setFilter(v)} style={{padding:'6px 14px',borderRadius:6,
+          border:`1px solid ${filter===v?C.lime:C.border}`,background:filter===v?C.lime+'22':'transparent',
+          color:filter===v?C.lime:C.mutedL,fontWeight:700,fontSize:12}}>
+          {l}
+        </button>
+      ))}
+      <span style={{fontSize:11,color:C.muted,fontFamily:'Syne Mono',marginLeft:'auto'}}>{filtered.length} partidos</span>
+    </div>
+    {filtered.map(m=><MatchCard key={m.id} match={m} atpPlayers={atpData?.players} wtaPlayers={wtaData?.players}/>)}
+  </div>;
+}
+
+// ═══════════════════════════════════════════
+// TAB: H2H COMPARE
+// ═══════════════════════════════════════════
+function CompareTab({atpData,wtaData}){
+  const [tour,setTour]=useState('ATP');
+  const [q1,setQ1]=useState(''),[q2,setQ2]=useState('');
+  const [p1,setP1]=useState(null),[p2,setP2]=useState(null);
+  const [surf,setSurf]=useState('Hard');
+  const [show1,setShow1]=useState(false),[show2,setShow2]=useState(false);
+  const data=(tour==='ATP'?atpData:wtaData)?.players||[];
+  const h2hMap=(tour==='ATP'?atpData:wtaData)?.h2h||{};
+
+  const search=(q,excl)=>q.length<2?[]:data.filter(x=>x.id!==excl?.id&&x.name?.toLowerCase().includes(q.toLowerCase())).slice(0,7);
+  const h2hRaw=useMemo(()=>{
+    if(!p1||!p2) return null;
+    return h2hMap[[p1.id,p2.id].sort().join('_')]||null;
+  },[p1,p2,h2hMap]);
+  const h2hData=useMemo(()=>{
+    if(!h2hRaw||!p1) return null;
+    const isFirst=h2hRaw.p1===p1.id;
+    return{p1w:isFirst?h2hRaw.w1:h2hRaw.w2,p2w:isFirst?h2hRaw.w2:h2hRaw.w1,matches:(h2hRaw.matches||[]).slice(-15).reverse()};
+  },[h2hRaw,p1]);
+  const pred=useMemo(()=>p1&&p2?predictMatch(p1,p2,surf,h2hData?{p1Wins:h2hData.p1w,p2Wins:h2hData.p2w}:null):null,[p1,p2,surf,h2hData]);
+
+  const Picker=({q,setQ,p,setP,show,setShow,side})=>(
+    <div style={{flex:1}}>
+      <div style={{position:'relative',marginBottom:8}}>
+        <input value={q} onChange={e=>{setQ(e.target.value);setP(null);setShow(true);}}
+          onFocus={()=>setShow(true)}
+          placeholder={`🔍 ${side==='left'?'Jugador 1':'Jugador 2'}…`}
+          style={{width:'100%',padding:'10px 12px',background:C.s2,
+            border:`2px solid ${p?(side==='left'?C.lime:C.rose):C.border}`,borderRadius:8,color:C.text,fontSize:13}}/>
+        {show&&search(q,side==='left'?p2:p1).length>0&&(
+          <div style={{position:'absolute',top:'100%',left:0,right:0,background:C.s2,border:`1px solid ${C.border}`,
+            borderRadius:8,zIndex:30,boxShadow:'0 8px 32px #000000aa',maxHeight:250,overflowY:'auto'}}>
+            {search(q,side==='left'?p2:p1).map(x=>(
+              <div key={x.id} onClick={()=>{setP(x);setQ(x.name);setShow(false);}}
+                style={{padding:'8px 12px',cursor:'pointer',display:'flex',gap:8,alignItems:'center',
+                  borderBottom:`1px solid ${C.border}33`,fontSize:12}}>
+                <Flag cc={x.country}/><span style={{flex:1}}>{x.name}</span>
+                <span style={{color:C.muted,fontFamily:'Syne Mono',fontSize:10}}>#{x.rank}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {p&&<PlayerCard p={p} onSelect={()=>{}} selected={null}/>}
+    </div>
+  );
+
+  return<div>
+    <div style={{display:'flex',gap:8,marginBottom:14,flexWrap:'wrap'}}>
+      {[['ATP','🎾'],['WTA','🎀']].map(([t,ic])=>(
+        <button key={t} onClick={()=>setTour(t)} style={{padding:'6px 14px',borderRadius:6,
+          border:`1px solid ${tour===t?C.lime:C.border}`,background:tour===t?C.lime+'22':'transparent',
+          color:tour===t?C.lime:C.mutedL,fontWeight:700,fontSize:12}}>{ic} {t}</button>
+      ))}
+      {['Hard','Clay','Grass'].map(s=>(
+        <button key={s} onClick={()=>setSurf(s)} style={{padding:'6px 14px',borderRadius:6,
+          border:`1px solid ${surf===s?SURF_CLR[normSurf(s)]:C.border}`,
+          background:surf===s?SURF_CLR[normSurf(s)]+'22':'transparent',
+          color:surf===s?SURF_CLR[normSurf(s)]:C.mutedL,fontWeight:700,fontSize:12}}>
+          {SURF_ICO[normSurf(s)]} {s}
+        </button>
+      ))}
+    </div>
+    <div className="compare-row" style={{display:'flex',gap:12,alignItems:'flex-start',marginBottom:16}}>
+      <Picker q={q1} setQ={setQ1} p={p1} setP={setP1} show={show1} setShow={setShow1} side="left"/>
+      <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minWidth:80,paddingTop:50}}>
+        <span style={{fontSize:28,color:C.muted,marginBottom:8}}>⚔️</span>
+        {pred&&<>
+          <div style={{fontWeight:900,fontSize:22,color:pred.p1>pred.p2?C.lime:C.mutedL,fontFamily:'Syne',lineHeight:1}}>{pred.p1}%</div>
+          <div style={{height:1,width:50,background:C.border,margin:'6px 0'}}/>
+          <div style={{fontWeight:900,fontSize:22,color:pred.p2>pred.p1?C.lime:C.mutedL,fontFamily:'Syne',lineHeight:1}}>{pred.p2}%</div>
+          <div style={{fontSize:9,color:C.muted,fontFamily:'Syne Mono',marginTop:5,textAlign:'center'}}>Conf {pred.conf}%</div>
+        </>}
+      </div>
+      <Picker q={q2} setQ={setQ2} p={p2} setP={setP2} show={show2} setShow={setShow2} side="right"/>
+    </div>
+    {h2hData&&<div style={{background:C.s1,borderRadius:12,padding:14,marginBottom:14,border:`1px solid ${C.border}`}}>
+      <div style={{display:'flex',alignItems:'center',gap:10,marginBottom:10}}>
+        <span style={{fontFamily:'Syne Mono',fontSize:10,color:C.muted,textTransform:'uppercase'}}>H2H histórico</span>
+        <span style={{fontWeight:900,fontSize:22,color:C.lime,fontFamily:'Syne'}}>{h2hData.p1w}</span>
+        <span style={{color:C.muted,fontSize:16}}>–</span>
+        <span style={{fontWeight:900,fontSize:22,color:C.rose,fontFamily:'Syne'}}>{h2hData.p2w}</span>
+      </div>
+      {h2hData.matches.slice(0,10).map((m,i)=>{
+        const w1=m.winner===p1?.id;
+        return<div key={i} style={{display:'flex',gap:8,alignItems:'center',padding:'5px 8px',background:C.s2,borderRadius:6,fontSize:11,marginBottom:3}}>
+          <span style={{color:C.muted,fontFamily:'Syne Mono',minWidth:80}}>{m.date}</span>
+          <SurfBadge surf={m.surf} sz={8}/>
+          <span style={{color:C.mutedL,fontFamily:'Syne Mono',minWidth:24}}>{m.round}</span>
+          <span style={{color:C.mutedL,flex:1,fontSize:10}}>{m.tourney}</span>
+          <span style={{fontFamily:'Syne Mono',fontWeight:700,color:w1?C.lime:C.rose}}>{m.score}</span>
+          <span style={{fontSize:10,fontWeight:700,color:w1?C.lime:C.rose}}>✓ {w1?p1?.name?.split(' ').slice(-1)[0]:p2?.name?.split(' ').slice(-1)[0]}</span>
+        </div>;
+      })}
+    </div>}
+    {pred&&<div style={{background:C.s1,borderRadius:12,padding:14,border:`1px solid ${C.border}`}}>
+      <p style={{margin:'0 0 10px',fontSize:9,fontWeight:700,color:C.violet,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>🧮 Desglose del modelo</p>
+      <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:10}}>
+        {pred.usedRealPP&&<span style={{fontSize:9,padding:'2px 8px',borderRadius:3,background:C.lime+'22',color:C.lime,fontFamily:'Syne Mono'}}>✅ P(srv) desde stats reales</span>}
+        {pred.usedSurfForm&&<span style={{fontSize:9,padding:'2px 8px',borderRadius:3,background:C.sky+'22',color:C.sky,fontFamily:'Syne Mono'}}>✅ Forma superficie real</span>}
+        {(pred.fatigue1>3||pred.fatigue2>3)&&<span style={{fontSize:9,padding:'2px 8px',borderRadius:3,background:C.orange+'22',color:C.orange,fontFamily:'Syne Mono'}}>⚠️ Ajuste fatiga aplicado</span>}
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:8,marginBottom:10}}>
+        {[['Elo Overall',pred.eloOv+'%',C.lime],['Elo '+surf,pred.eloSf+'%',SURF_CLR[normSurf(surf)]||C.sky],
+          ['Forma adj.',pred.formAdj+(pred.formAdj>0?'%+':'%'),pred.formAdj>0?C.lime:C.rose],
+          ['H2H adj.',pred.h2hAdj+'%',pred.h2hAdj>0?C.lime:pred.h2hAdj<0?C.rose:C.muted]].map(([l,v,c])=>(
+          <div key={l} style={{background:C.s2,borderRadius:8,padding:'8px 10px',textAlign:'center'}}>
+            <p style={{margin:0,fontSize:8,color:C.muted,fontFamily:'Syne Mono'}}>{l}</p>
+            <p style={{margin:'3px 0 0',fontWeight:900,fontSize:18,color:c,fontFamily:'Syne',lineHeight:1}}>{v}</p>
+          </div>
+        ))}
+      </div>
+      {pred.mc&&<div style={{background:C.s2,borderRadius:8,padding:'10px 12px'}}>
+        <div style={{display:'grid',gridTemplateColumns:'repeat(7,1fr)',gap:4,textAlign:'center'}}>
+          {[['P1 gana',pred.mc.p1+'%',C.lime],['P2 gana',pred.mc.p2+'%',C.rose],
+            ['2-0',pred.mc.s20+'%',C.lime],['2-1',pred.mc.s21+'%',C.amber],
+            ['0-2',pred.mc.s02+'%',C.rose],['1-2',pred.mc.s12+'%',C.amber],
+            ['Games',pred.mc.med,C.violet]].map(([l,v,c])=>(
+            <div key={l}>
+              <p style={{margin:0,fontSize:7,color:C.muted,fontFamily:'Syne Mono'}}>{l}</p>
+              <p style={{margin:'2px 0 0',fontWeight:900,fontSize:14,color:c,fontFamily:'Syne',lineHeight:1}}>{v}</p>
+            </div>
+          ))}
+        </div>
+        {pred.mc.realPP&&<p style={{margin:'6px 0 0',fontSize:9,color:C.lime,fontFamily:'Syne Mono',textAlign:'center'}}>📡 MC con probabilidades de punto desde stats reales</p>}
+      </div>}
+    </div>}
+  </div>;
+}
+
+// ═══════════════════════════════════════════
+// TAB: STATS LEADERBOARD
+// ═══════════════════════════════════════════
+function StatsTab({atpData,wtaData}){
+  const [tour,setTour]=useState('ATP');
+  const [metric,setMetric]=useState('elo_hard');
+  const data=(tour==='ATP'?atpData:wtaData)?.players||[];
+  const metrics=[
+    {k:'elo_hard',l:'Elo Hard',fn:p=>p.Hard||0,c:C.sky},
+    {k:'elo_clay',l:'Elo Clay',fn:p=>p.Clay||0,c:C.amber},
+    {k:'elo_grass',l:'Elo Grass',fn:p=>p.Grass||0,c:C.emerald},
+    {k:'elo_ov',l:'Elo Overall',fn:p=>p.overall||0,c:C.lime},
+    {k:'serve',l:'1er Srv Won',fn:p=>{const d=deriveStats(p,'Hard');return d.fstWon||0;},c:C.sky},
+    {k:'pserve',l:'P(srv won)',fn:p=>{const d=deriveStats(p,'Hard');return d.pServeWon||0;},c:C.cyan},
+    {k:'bpsave',l:'BP Salvados',fn:p=>{const d=deriveStats(p,'Hard');return d.bpSave||0;},c:C.violet},
+    {k:'bpconv',l:'BP Convertidos',fn:p=>{const d=deriveStats(p,'Hard');return d.bpConv||0;},c:C.emerald},
+    {k:'form',l:'Forma L10',fn:p=>p.formAll?.slice(-10).reduce((a,b)=>a+b,0)||0,c:C.lime},
+    {k:'winpct',l:'Win%',fn:p=>p.winPct||0,c:C.cyan},
+  ];
+  const m=metrics.find(x=>x.k===metric)||metrics[0];
+  const top=[...data].sort((a,b)=>m.fn(b)-m.fn(a)).slice(0,30);
+  const maxV=m.fn(top[0])||1;
+
+  return<div>
+    <div style={{display:'flex',gap:8,flexWrap:'wrap',marginBottom:14,alignItems:'center'}}>
+      <div style={{display:'flex',background:C.s2,borderRadius:8,padding:3,border:`1px solid ${C.border}`}}>
+        {[['ATP','🎾'],['WTA','🎀']].map(([t,ic])=>(
+          <button key={t} onClick={()=>setTour(t)} style={{padding:'6px 14px',borderRadius:6,border:'none',
+            background:tour===t?C.lime+'22':'transparent',color:tour===t?C.lime:C.mutedL,fontWeight:700,fontSize:12}}>
+            {ic} {t}
+          </button>
+        ))}
+      </div>
+      <div style={{display:'flex',gap:5,flexWrap:'wrap'}}>
+        {metrics.map(mx=>(
+          <button key={mx.k} onClick={()=>setMetric(mx.k)} style={{padding:'5px 12px',borderRadius:6,
+            border:`1px solid ${metric===mx.k?mx.c:C.border}`,background:metric===mx.k?mx.c+'22':'transparent',
+            color:metric===mx.k?mx.c:C.mutedL,fontWeight:700,fontSize:11,transition:'all .15s'}}>
+            {mx.l}
+          </button>
+        ))}
+      </div>
+    </div>
+    <div style={{background:C.s1,borderRadius:12,overflow:'hidden',border:`1px solid ${C.border}`}}>
+      <div style={{padding:'10px 16px',borderBottom:`1px solid ${C.border}`}}>
+        <span style={{fontSize:10,fontWeight:700,color:C.muted,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>
+          TOP 30 — {m.l} ({tour})
+        </span>
+      </div>
+      {top.map((p,i)=>{
+        const v=m.fn(p);
+        const d=deriveStats(p,p.bestSurf);
+        return<div key={p.id} style={{display:'flex',gap:10,alignItems:'center',padding:'8px 16px',
+          borderBottom:`1px solid ${C.border}33`,background:i%2?C.s2+'33':'transparent'}}>
+          <span style={{fontFamily:'Syne Mono',fontWeight:700,color:i<3?C.lime:C.muted,fontSize:13,minWidth:26}}>
+            {i===0?'🥇':i===1?'🥈':i===2?'🥉':`${i+1}.`}
+          </span>
+          <Flag cc={p.country}/>
+          <span style={{flex:1,fontWeight:600,fontSize:13}}>{p.name}</span>
+          <span style={{fontSize:10,color:C.muted,fontFamily:'Syne Mono',minWidth:36}}>#{p.rank}</span>
+          <SurfBadge surf={p.bestSurf} sz={8}/>
+          {d.fatigue14>3&&<span style={{fontSize:9,color:C.orange,fontFamily:'Syne Mono'}}>🏃{d.fatigue14}</span>}
+          <div style={{width:110,height:6,background:C.border,borderRadius:3,overflow:'hidden'}}>
+            <div style={{width:v/maxV*100+'%',height:'100%',background:m.c,borderRadius:3}}/>
+          </div>
+          <span style={{fontFamily:'Syne Mono',fontWeight:700,fontSize:12,color:m.c,minWidth:52,textAlign:'right'}}>
+            {m.k.includes('elo')?Math.round(v):v.toFixed(1)+'%'}
+          </span>
+          <Dots form={p.formAll} max={5}/>
+        </div>;
+      })}
+    </div>
+  </div>;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BACKTEST ENGINE — sin look-ahead, Elo incremental punto a punto
+// Para cada partido usamos SOLO los datos disponibles ANTES de él
+// Fuente: Jeff Sackmann CSV 2023-2025 (resultados reales)
+// ═══════════════════════════════════════════════════════════════
+
+async function runTennisBacktest(tour, year, surface, minMatches, onProg) {
+  onProg(`📥 Descargando partidos ${tour} ${year}…`, 5);
+  // Necesitamos histórico previo para construir Elo (2 años antes)
+  const buildYears = year===2026?[2024,2025]:year===2025?[2023,2024]:year===2024?[2022,2023]:[2021,2022];
+  let buildMatches=[];
+  for(let i=0;i<buildYears.length;i++){
+    onProg(`📚 Cargando histórico ${buildYears[i]} para Elo inicial…`, 5+i*10);
+    const m=await fetchMatches(tour,buildYears[i]);
+    buildMatches.push(...m);
+  }
+  onProg(`📥 Cargando partidos de prueba ${year}…`, 28);
+  const testMatches=await fetchMatches(tour,year);
+
+  onProg(`🧮 Construyendo Elo base con ${buildMatches.length.toLocaleString()} partidos…`, 35);
+
+  // Estado Elo inicial (construido con años previos, sin el año de prueba)
+  const ratings=buildElo(buildMatches);
+
+  onProg(`🔬 Simulando ${testMatches.length} partidos sin look-ahead…`, 50);
+
+  const results=[];
+  let correct=0, total=0, totalEdge=0;
+  let pnl=0, pnlCurve=[];
+  // Para O/U: simular over/under de sets (O1.5 sets = al menos 2 sets)
+  let ouCorrect=0, ouTotal=0;
+
+  // Ordenar por fecha
+  const sorted=[...testMatches].sort((a,b)=>(a.tourney_date||'').localeCompare(b.tourney_date||''));
+
+  // Filtrar por superficie si se pide
+  const toProcess=surface==='All'?sorted:sorted.filter(m=>normSurf(m.surface)===surface);
+
+  for(const m of toProcess){
+    const wId=m.winner_id, lId=m.loser_id;
+    if(!wId||!lId) continue;
+
+    // Construir objetos de jugador con el Elo ACTUAL (antes de este partido)
+    const wr=ratings[wId];
+    const lr=ratings[lId];
+
+    // Saltar si alguno no tiene historial mínimo
+    if(!wr||!lr) { updateElo(ratings,m); continue; }
+    if(wr.count<minMatches||lr.count<minMatches) { updateElo(ratings,m); continue; }
+
+    const surf=normSurf(m.surface);
+
+    // Snap del estado actual (antes de actualizar)
+    const snap1={...wr,sc:{...wr.sc},sw:{...wr.sw},sv:{...wr.sv},svL:{...wr.svL},ret:{...wr.ret}};
+    const snap2={...lr,sc:{...lr.sc},sw:{...lr.sc},sv:{...lr.sv},svL:{...lr.svL},ret:{...lr.ret}};
+
+    // Predicción con el estado PRE-partido
+    // El ganador real es el winner_id
+    const pred=predictMatch(snap1,snap2,surf,null);
+    if(!pred||pred.p1===pred.p2){ updateElo(ratings,m); continue; }
+
+    const modelPicksWinner = pred.p1>=pred.p2; // true = modelo predice que p1 (winner) gana
+    const modelCorrect = modelPicksWinner; // winner_id siempre es el ganador real
+
+    // Score/sets — parsear score si está disponible
+    let sets1=0,sets2=0;
+    if(m.score){
+      const setScores=(m.score||'').split(' ');
+      for(const s of setScores){
+        const clean=s.replace(/\[.*?\]/g,'').replace(/\(.*?\)/g,'').trim();
+        const parts=clean.split('-');
+        if(parts.length===2){
+          const a=parseInt(parts[0]),b=parseInt(parts[1]);
+          if(!isNaN(a)&&!isNaN(b)){
+            if(a>b) sets1++; else if(b>a) sets2++;
+          }
+        }
+      }
+    }
+    const totalSets=sets1+sets2;
+    // O/U 1.5 sets: over = 2+ sets played (always true in best-of-3 if completed)
+    // Better: O/U 2.5 games total sets — predict if match goes to 3 sets
+    const wentTo3Sets=totalSets>=3;
+    const predGoes3=pred.mc&&(pred.mc.s21+pred.mc.s12)>45; // MC predicts >45% chance of 3 sets
+    const ouMatchCorrect=predGoes3===wentTo3Sets;
+
+    const probFav=Math.max(pred.p1,pred.p2)/100;
+
+    // P&L flat €100 con implied odds aprox -110 (1.91 decimal)
+    pnl+=modelCorrect?90.91:-100;
+    pnlCurve.push({i:results.length,pnl:+pnl.toFixed(2),correct:modelCorrect,
+      date:m.tourney_date,game:`${wr.name||wId} v ${lr.name||lId}`});
+
+    if(modelCorrect) correct++;
+    if(ouMatchCorrect) ouCorrect++;
+    ouTotal++;
+    total++;
+
+    results.push({
+      date:m.tourney_date,
+      tourney:m.tourney_name||'',
+      round:m.round||'',
+      surf,
+      p1:snap1.name||wId,
+      p2:snap2.name||lId,
+      winner:snap1.name||wId,   // winner_id = winner always in Sackmann
+      modelPick:modelPicksWinner?(snap1.name||wId):(snap2.name||lId),
+      modelProb:Math.max(pred.p1,pred.p2),
+      correct:modelCorrect,
+      ouPred:predGoes3?'3 SETS':'2 SETS',
+      ouReal:wentTo3Sets?'3 SETS':'2 SETS',
+      ouCorrect:ouMatchCorrect,
+      score:m.score||'',
+      conf:pred.conf,
+      eloGap:Math.abs(pred.eloOv-50),
+      usedSurf:pred.usedSurfForm,
+      usedPP:pred.usedRealPP,
+    });
+
+    // Ahora actualizar Elo con el resultado real
+    updateElo(ratings,m);
+  }
+
+  // Stats
+  const acc=total>0?+(correct/total*100).toFixed(1):0;
+  const ouAcc=ouTotal>0?+(ouCorrect/ouTotal*100).toFixed(1):0;
+  const roi=total>0?+(pnl/(total*100)*100).toFixed(1):0;
+
+  // Por nivel de confianza
+  const tiers=[
+    {label:'Alta conf (≥75%)',min:75,max:100},
+    {label:'Media (65-74%)',min:65,max:75},
+    {label:'Baja (<65%)',min:0,max:65},
+  ].map(t=>{
+    const sub=results.filter(r=>r.modelProb>=t.min&&r.modelProb<t.max);
+    const c=sub.filter(r=>r.correct).length;
+    return{...t,n:sub.length,correct:c,acc:sub.length?+(c/sub.length*100).toFixed(1):null};
+  });
+
+  // Por superficie
+  const surfs=['Hard','Clay','Grass'];
+  const bySurf=surfs.map(s=>{
+    const sub=results.filter(r=>r.surf===s);
+    const c=sub.filter(r=>r.correct).length;
+    return{surf:s,n:sub.length,correct:c,acc:sub.length?+(c/sub.length*100).toFixed(1):null};
+  });
+
+  // Calibration: avg model prob vs actual win rate in buckets
+  const buckets=[55,60,65,70,75,80,85,90].map(b=>{
+    const sub=results.filter(r=>r.modelProb>=b&&r.modelProb<b+5);
+    const c=sub.filter(r=>r.correct).length;
+    return{label:`${b}-${b+5}%`,n:sub.length,pred:b+2.5,actual:sub.length?+(c/sub.length*100).toFixed(1):null};
+  });
+
+  return{results,pnlCurve,acc,ouAcc,roi,total,correct,ouCorrect,ouTotal,pnl:+pnl.toFixed(2),tiers,bySurf,buckets};
+}
+
+// Update Elo ratings with a single match result (used during backtest)
+function updateElo(ratings,m){
+  const ELO0_=1500;
+  const TOURNEY_K_={G:32,M:24,A:16,D:8,F:28,C:12};
+  const wId=m.winner_id,lId=m.loser_id;
+  if(!wId||!lId) return;
+  const surf=normSurf(m.surface);
+  const K=(TOURNEY_K_[m.tourney_level]||12)*(m.round==='F'?1.5:m.round==='SF'?1.2:1);
+  const ens=id=>{if(!ratings[id])ratings[id]={id,name:'',overall:ELO0_,Hard:ELO0_,Clay:ELO0_,Grass:ELO0_,Carpet:ELO0_,count:0,wins:0,losses:0,sc:{Hard:0,Clay:0,Grass:0,Carpet:0},sw:{Hard:0,Clay:0,Grass:0,Carpet:0},formAll:[],formHard:[],formClay:[],formGrass:[],formCarpet:[],sv:{aces:0,df:0,svpt:0,fin:0,fwon:0,swon:0,bps:0,bpf:0,n:0},svL:{aces:0,df:0,svpt:0,fin:0,fwon:0,swon:0,bps:0,bpf:0,n:0},ret:{bpw:0,bpf:0,n:0},datelog:[],lastDate:''};return ratings[id];};
+  const w=ens(wId),l=ens(lId);
+  if(m.winner_name&&!w.name) w.name=m.winner_name;
+  if(m.loser_name&&!l.name) l.name=m.loser_name;
+  const eo=eloExp(w.overall,l.overall);
+  w.overall+=K*(1-eo); l.overall+=K*(0-eo);
+  const es=eloExp(w[surf]||ELO0_,l[surf]||ELO0_);
+  w[surf]+=K*(1-es); l[surf]+=K*(0-es);
+  w.count++;w.wins++;w.sc[surf]++;w.sw[surf]++;
+  l.count++;l.losses++;l.sc[surf]++;
+  w.formAll.push(1);if(w.formAll.length>20)w.formAll.shift();
+  l.formAll.push(0);if(l.formAll.length>20)l.formAll.shift();
+  const wk='form'+surf,lk='form'+surf;
+  w[wk].push(1);if(w[wk].length>15)w[wk].shift();
+  l[lk].push(0);if(l[lk].length>15)l[lk].shift();
+  if(m.tourney_date){w.datelog.push(m.tourney_date);if(w.datelog.length>60)w.datelog.shift();l.datelog.push(m.tourney_date);if(l.datelog.length>60)l.datelog.shift();}
+}
+
+// ── PnL Chart SVG ────────────────────────────────────────────
+function PnlChart({curve,height=180}){
+  if(!curve||curve.length<2) return null;
+  const w=680,pad={l:55,r:16,t:14,b:28},iW=w-pad.l-pad.r,iH=height-pad.t-pad.b;
+  const vals=curve.map(p=>p.pnl);
+  const minV=Math.min(0,...vals),maxV=Math.max(0,...vals);
+  const range=maxV-minV||1;
+  const scX=i=>pad.l+(i/(curve.length-1))*iW;
+  const scY=v=>pad.t+iH-((v-minV)/range)*iH;
+  const zY=scY(0);
+  const pts=curve.map((p,i)=>`${scX(i).toFixed(1)},${scY(p.pnl).toFixed(1)}`);
+  const line=`M ${pts.join(' L ')}`;
+  const fill=`M ${scX(0)},${zY} L ${pts.join(' L ')} L ${scX(curve.length-1)},${zY} Z`;
+  const lastV=vals[vals.length-1];
+  const lc=lastV>=0?C.lime:C.rose;
+  const yTicks=4;
+  const yLabels=Array.from({length:yTicks+1},(_,i)=>minV+(range/yTicks)*i);
+  return<svg viewBox={`0 0 ${w} ${height}`} style={{width:'100%',height:'auto',display:'block'}}>
+    {yLabels.map((v,i)=>{const y=scY(v);return<g key={i}>
+      <line x1={pad.l} x2={pad.l+iW} y1={y} y2={y} stroke={v===0?'#334155':'#1e293b'} strokeWidth={v===0?1.5:.5} strokeDasharray={v===0?'none':'3,3'}/>
+      <text x={pad.l-6} y={y+4} textAnchor="end" fill={v===0?'#94a3b8':'#475569'} fontSize={9} fontFamily="Syne Mono">{v>=0?'+':''}{Math.round(v)}</text>
+    </g>;})}
+    <path d={fill} fill={lc} fillOpacity=".07"/>
+    <path d={line} fill="none" stroke={lc} strokeWidth={2} strokeLinejoin="round"/>
+    {curve.map((p,i)=>p.correct===false&&<circle key={i} cx={scX(i)} cy={scY(p.pnl)} r={2.5} fill={C.rose} opacity={.7}/>)}
+    {curve.map((p,i)=>p.correct===true&&<circle key={i} cx={scX(i)} cy={scY(p.pnl)} r={2.5} fill={C.lime} opacity={.5}/>)}
+    <circle cx={scX(curve.length-1)} cy={scY(lastV)} r={5} fill={lc}/>
+    <text x={scX(curve.length-1)+8} y={scY(lastV)+4} fill={lc} fontSize={10} fontWeight="bold" fontFamily="Syne Mono">{lastV>=0?'+':''}{lastV.toFixed(0)}</text>
+  </svg>;
+}
+
+// ── Calibration Chart ─────────────────────────────────────────
+function CalibChart({buckets}){
+  if(!buckets) return null;
+  const valid=buckets.filter(b=>b.n>0&&b.actual!=null);
+  if(valid.length<2) return<p style={{fontSize:11,color:C.muted,fontFamily:'Syne Mono',padding:'1rem'}}>No hay suficientes datos por bucket</p>;
+  const w=400,h=220,pad={l:40,r:20,t:14,b:30};
+  const iW=w-pad.l-pad.r,iH=h-pad.t-pad.b;
+  const scX=v=>pad.l+(v-50)/50*iW;
+  const scY=v=>pad.t+iH-(v-40)/60*iH;
+  return<svg viewBox={`0 0 ${w} ${h}`} style={{width:'100%',height:'auto'}}>
+    {/* Grid */}
+    {[50,60,70,80,90,100].map(v=><line key={v} x1={pad.l} x2={pad.l+iW} y1={scY(v)} y2={scY(v)} stroke="#1e293b" strokeWidth={.5}/>)}
+    {[55,60,65,70,75,80,85,90].map(v=><line key={v} x1={scX(v)} x2={scX(v)} y1={pad.t} y2={pad.t+iH} stroke="#1e293b" strokeWidth={.5}/>)}
+    {/* Perfect calibration line */}
+    <line x1={scX(55)} y1={scY(55)} x2={scX(92)} y2={scY(92)} stroke="#334155" strokeWidth={1} strokeDasharray="4,4"/>
+    <text x={scX(85)} y={scY(88)} fill="#475569" fontSize={9} fontFamily="Syne Mono">Perfecto</text>
+    {/* Axes */}
+    {[50,60,70,80,90,100].map(v=><text key={v} x={pad.l-6} y={scY(v)+4} textAnchor="end" fill="#475569" fontSize={8} fontFamily="Syne Mono">{v}%</text>)}
+    {[55,65,75,85].map(v=><text key={v} x={scX(v)} y={pad.t+iH+14} textAnchor="middle" fill="#475569" fontSize={8} fontFamily="Syne Mono">{v}%</text>)}
+    <text x={pad.l-30} y={pad.t+iH/2} textAnchor="middle" fill="#64748b" fontSize={9} fontFamily="Syne Mono" transform={`rotate(-90,${pad.l-30},${pad.t+iH/2})`}>Real</text>
+    <text x={pad.l+iW/2} y={h-4} textAnchor="middle" fill="#64748b" fontSize={9} fontFamily="Syne Mono">Predicho</text>
+    {/* Dots */}
+    {valid.map((b,i)=>{const cx=scX(b.pred),cy=scY(b.actual),above=b.actual>=b.pred;
+      return<g key={i}>
+        <circle cx={cx} cy={cy} r={Math.min(12,Math.max(5,b.n/8))} fill={above?C.lime:C.rose} fillOpacity=".2" stroke={above?C.lime:C.rose} strokeWidth={1.5}/>
+        <text x={cx} y={cy+4} textAnchor="middle" fill={above?C.lime:C.rose} fontSize={9} fontWeight="bold" fontFamily="Syne Mono">{b.actual}%</text>
+        <text x={cx} y={cy+14} textAnchor="middle" fill="#64748b" fontSize={7} fontFamily="Syne Mono">n={b.n}</text>
+      </g>;
+    })}
+  </svg>;
+}
+
+// ── BACKTEST TAB ──────────────────────────────────────────────
+function BacktestTab(){
+  const [tour,setTour]=useState('ATP');
+  const [year,setYear]=useState(2024);
+  const [surface,setSurface]=useState('All');
+  const [minM,setMinM]=useState(10);
+  const [loading,setLoading]=useState(false);
+  const [prog,setProg]=useState('');
+  const [pct,setPct]=useState(0);
+  const [result,setResult]=useState(null);
+  const [showAll,setShowAll]=useState(false);
+  const [err,setErr]=useState('');
+
+  const run=async()=>{
+    setLoading(true);setErr('');setResult(null);setPct(0);
+    try{
+      const res=await runTennisBacktest(tour,year,surface,minM,(msg,p)=>{setProg(msg);setPct(p||0);});
+      setResult(res);
+    }catch(e){setErr(e.message);}
+    finally{setLoading(false);}
+  };
+
+  const SC={
+    lime:'var(--lime)',rose:'var(--rose)',amber:'var(--amber)',
+    sky:'var(--sky)',violet:'var(--violet)',emerald:'var(--emerald)',
+  };
+  const StatBox=({icon,label,value,sub,color})=>(
+    <div style={{background:C.s2,borderRadius:10,padding:'12px 14px',border:`1px solid ${C.border}`}}>
+      <p style={{margin:0,fontSize:9,color:C.muted,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>{icon} {label}</p>
+      <p style={{margin:'4px 0 2px',fontWeight:900,fontSize:26,color:color||C.lime,fontFamily:'Syne',lineHeight:1}}>{value}</p>
+      {sub&&<p style={{margin:0,fontSize:9,color:C.mutedL,fontFamily:'Syne Mono'}}>{sub}</p>}
+    </div>
+  );
+
+  return<div>
+    {/* Header */}
+    <div style={{marginBottom:16}}>
+      <h2 style={{fontFamily:'Syne',fontWeight:900,fontSize:22,marginBottom:4}}>🧪 Backtest Real — Sin look-ahead</h2>
+      <p style={{fontSize:11,color:C.muted,fontFamily:'Syne Mono',lineHeight:1.7}}>
+        Para cada partido del año elegido, el modelo usa <span style={{color:C.lime}}>solo datos anteriores</span> a ese partido.<br/>
+        Elo, forma, fatiga y P(srv) se actualizan partido a partido en orden cronológico.
+      </p>
+    </div>
+
+    {/* Controls */}
+    <div style={{background:C.s1,borderRadius:12,padding:'14px 16px',marginBottom:16,border:`1px solid ${C.border}`}}>
+      <div className="chip-scroll" style={{display:'flex',gap:12,flexWrap:'wrap',alignItems:'flex-end'}}>
+      <div>
+        <p style={{margin:'0 0 6px',fontSize:9,color:C.muted,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>Tour</p>
+        <div style={{display:'flex',gap:5}}>
+          {[['ATP','🎾'],['WTA','🎀']].map(([t,ic])=>(
+            <button key={t} onClick={()=>setTour(t)} style={{padding:'6px 14px',borderRadius:6,border:`1px solid ${tour===t?(t==='ATP'?C.sky:C.rose):C.border}`,background:tour===t?(t==='ATP'?C.sky:C.rose)+'22':'transparent',color:tour===t?(t==='ATP'?C.sky:C.rose):C.mutedL,fontWeight:700,fontSize:12}}>{ic} {t}</button>
+          ))}
+        </div>
+      </div>
+      <div>
+        <p style={{margin:'0 0 6px',fontSize:9,color:C.muted,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>Año</p>
+        <div style={{display:'flex',gap:5}}>
+          {[2023,2024,2025,2026].map(y=>(
+            <button key={y} onClick={()=>setYear(y)} style={{padding:'6px 14px',borderRadius:6,border:`1px solid ${year===y?C.lime:C.border}`,background:year===y?C.lime+'22':'transparent',color:year===y?C.lime:C.mutedL,fontWeight:700,fontSize:12}}>{y}</button>
+          ))}
+        </div>
+      </div>
+      <div>
+        <p style={{margin:'0 0 6px',fontSize:9,color:C.muted,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>Superficie</p>
+        <div style={{display:'flex',gap:5}}>
+          {[['All','Todas',C.mutedL],['Hard','Hard',C.sky],['Clay','Clay',C.amber],['Grass','Grass',C.emerald]].map(([s,l,c])=>(
+            <button key={s} onClick={()=>setSurface(s)} style={{padding:'6px 12px',borderRadius:6,border:`1px solid ${surface===s?c:C.border}`,background:surface===s?c+'22':'transparent',color:surface===s?c:C.mutedL,fontWeight:700,fontSize:11}}>{l}</button>
+          ))}
+        </div>
+      </div>
+      <div>
+        <p style={{margin:'0 0 6px',fontSize:9,color:C.muted,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>Mín. partidos previos</p>
+        <div style={{display:'flex',gap:5}}>
+          {[[5,'5'],[10,'10'],[20,'20'],[30,'30']].map(([v,l])=>(
+            <button key={v} onClick={()=>setMinM(v)} style={{padding:'6px 12px',borderRadius:6,border:`1px solid ${minM===v?C.violet:C.border}`,background:minM===v?C.violet+'22':'transparent',color:minM===v?C.violet:C.mutedL,fontWeight:700,fontSize:11}}>{l}</button>
+          ))}
+        </div>
+      </div>
+      <button onClick={run} disabled={loading} style={{padding:'10px 24px',background:loading?C.border:`linear-gradient(135deg,${C.lime},${C.cyan})`,border:'none',borderRadius:8,color:C.bg,fontWeight:900,fontSize:14,fontFamily:'Syne',letterSpacing:.5,transition:'all .2s',marginTop:4}}>
+        {loading?'⏳ ANALIZANDO…':'▶ EJECUTAR'}
+      </button>
+      <div style={{fontSize:10,color:C.muted,fontFamily:'Syne Mono',lineHeight:1.7,maxWidth:220}}>
+        ⚠️ Sin look-ahead real.<br/>
+        Break-even flat €100 a -110 = 52.4%<br/>
+        Los primeros ≤{minM} partidos se excluyen.
+      </div>
+      </div>{/* chip-scroll */}
+    </div>
+
+    {/* Loading */}
+    {loading&&<div style={{background:C.s1,borderRadius:12,padding:'24px 20px',marginBottom:16,border:`1px solid ${C.border}`}}>
+      <p style={{margin:'0 0 10px',fontSize:12,color:C.lime,fontFamily:'Syne Mono'}}>{prog}</p>
+      <div style={{height:6,background:C.border,borderRadius:3,overflow:'hidden'}}>
+        <div style={{width:pct+'%',height:'100%',background:`linear-gradient(90deg,${C.lime},${C.cyan})`,borderRadius:3,transition:'width .4s'}}/>
+      </div>
+      <p style={{margin:'6px 0 0',fontSize:10,color:C.muted,fontFamily:'Syne Mono',textAlign:'right'}}>{Math.round(pct)}%</p>
+    </div>}
+
+    {err&&<div style={{background:C.rose+'11',border:`1px solid ${C.rose}44`,borderRadius:10,padding:'12px 16px',color:C.rose,fontFamily:'Syne Mono',fontSize:11,marginBottom:16}}>{err}</div>}
+
+    {result&&!loading&&<div className="fade">
+      {/* Summary cards */}
+      <div className="stats-grid-4" style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:10,marginBottom:14}}>
+        <StatBox icon="🎯" label="Accuracy ML" value={result.acc+'%'} sub={`${result.correct}/${result.total} correctos`} color={result.acc>=60?C.lime:result.acc>=53?C.amber:C.rose}/>
+        <StatBox icon="📊" label="Accuracy 3 sets" value={result.ouAcc+'%'} sub={`${result.ouCorrect}/${result.ouTotal}`} color={result.ouAcc>=58?C.emerald:result.ouAcc>=53?C.amber:C.rose}/>
+        <StatBox icon="💰" label="P&L simulado" value={(result.pnl>=0?'+':'')+result.pnl.toFixed(0)+'€'} sub={`ROI: ${result.roi>0?'+':''}${result.roi}% · €100 plano`} color={result.pnl>=0?C.lime:C.rose}/>
+        <StatBox icon="📋" label="Partidos" value={result.total} sub={`${tour} ${year} · ${surface==='All'?'todas superficies':surface}`} color={C.violet}/>
+      </div>
+
+      {/* PnL Chart */}
+      <div style={{background:C.s1,borderRadius:12,padding:'14px 18px',marginBottom:14,border:`1px solid ${C.border}`}}>
+        <p style={{margin:'0 0 10px',fontSize:10,fontWeight:700,color:C.muted,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>
+          📈 P&L acumulado · €100 plano por partido · 🟢 acertado 🔴 fallado
+        </p>
+        <PnlChart curve={result.pnlCurve}/>
+        <p style={{margin:'6px 0 0',fontSize:9,color:C.muted,fontFamily:'Syne Mono',textAlign:'right'}}>
+          Ganado: €{(result.correct*90.91).toFixed(0)} · Perdido: €{((result.total-result.correct)*100).toFixed(0)} · Neto: {result.pnl>=0?'+':''}{result.pnl.toFixed(2)}€
+        </p>
+      </div>
+
+      {/* Tiers + By surf */}
+      <div className="col-2-mobile" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12,marginBottom:14}}>
+        <div style={{background:C.s1,borderRadius:12,padding:'14px 16px',border:`1px solid ${C.border}`}}>
+          <p style={{margin:'0 0 12px',fontSize:10,fontWeight:700,color:C.muted,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>🎚 Accuracy por confianza del modelo</p>
+          {result.tiers.map(t=>(
+            <div key={t.label} style={{marginBottom:10}}>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:3}}>
+                <span style={{fontSize:11,color:C.mutedL,fontFamily:'Syne Mono'}}>{t.label}</span>
+                <span style={{fontSize:11,fontWeight:700,fontFamily:'Syne Mono',
+                  color:t.acc>=60?C.lime:t.acc>=53?C.amber:C.rose}}>
+                  {t.acc!=null?t.acc+'%':'—'} <span style={{color:C.muted,fontWeight:400}}>({t.n}j)</span>
+                  {t.acc>=52.4?<span style={{color:C.lime}}> ✓</span>:<span style={{color:C.rose}}> ✗</span>}
+                </span>
+              </div>
+              {t.acc!=null&&<div style={{height:5,background:C.border,borderRadius:3}}>
+                <div style={{width:t.acc+'%',height:'100%',background:t.acc>=60?C.lime:t.acc>=53?C.amber:C.rose,borderRadius:3,transition:'width .5s'}}/>
+              </div>}
+            </div>
+          ))}
+          <p style={{margin:'10px 0 0',fontSize:9,color:C.muted,fontFamily:'Syne Mono'}}>52.4% = break-even -110 · &gt;55% = ROI+ esperado</p>
+        </div>
+
+        <div style={{background:C.s1,borderRadius:12,padding:'14px 16px',border:`1px solid ${C.border}`}}>
+          <p style={{margin:'0 0 12px',fontSize:10,fontWeight:700,color:C.muted,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>🏟 Accuracy por superficie</p>
+          {result.bySurf.filter(s=>s.n>0).map(s=>(
+            <div key={s.surf} style={{marginBottom:10}}>
+              <div style={{display:'flex',justifyContent:'space-between',marginBottom:3,alignItems:'center'}}>
+                <div style={{display:'flex',gap:6,alignItems:'center'}}>
+                  <span style={{fontSize:12}}>{SURF_ICO[s.surf]}</span>
+                  <span style={{fontSize:11,color:SURF_CLR[s.surf]||C.mutedL,fontFamily:'Syne Mono',fontWeight:700}}>{s.surf}</span>
+                </div>
+                <span style={{fontSize:11,fontWeight:700,fontFamily:'Syne Mono',
+                  color:s.acc>=60?C.lime:s.acc>=53?C.amber:C.rose}}>
+                  {s.acc!=null?s.acc+'%':'—'} ({s.n}j)
+                </span>
+              </div>
+              {s.acc!=null&&<div style={{height:5,background:C.border,borderRadius:3}}>
+                <div style={{width:s.acc+'%',height:'100%',background:SURF_CLR[s.surf]||C.lime,borderRadius:3,opacity:.8}}/>
+              </div>}
+            </div>
+          ))}
+
+          {/* Calibration */}
+          <p style={{margin:'14px 0 8px',fontSize:10,fontWeight:700,color:C.muted,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>📐 Calibración (pred vs real)</p>
+          <CalibChart buckets={result.buckets}/>
+          <p style={{margin:'4px 0 0',fontSize:9,color:C.muted,fontFamily:'Syne Mono'}}>Círculos más grandes = más partidos · Verde=modelo subestima · Rojo=modelo sobreestima</p>
+        </div>
+      </div>
+
+      {/* Results table */}
+      <div style={{background:C.s1,borderRadius:12,overflow:'hidden',border:`1px solid ${C.border}`}}>
+        <div style={{padding:'10px 16px',borderBottom:`1px solid ${C.border}`,display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+          <span style={{fontSize:10,fontWeight:700,color:C.muted,fontFamily:'Syne Mono',textTransform:'uppercase',letterSpacing:'1px'}}>
+            🗂 {showAll?result.results.length:'Últimos 30 partidos'}
+          </span>
+          <button onClick={()=>setShowAll(v=>!v)} style={{fontSize:11,color:C.sky,background:'none',border:'none',fontFamily:'Syne Mono',cursor:'pointer'}}>
+            {showAll?'Ver menos':'Ver todos ('+result.results.length+')'}
+          </button>
+        </div>
+        <div className="table-scroll" style={{overflowX:'auto'}}>
+          <table style={{width:'100%',borderCollapse:'collapse',fontSize:11,minWidth:700}}>
+            <thead><tr style={{borderBottom:`1px solid ${C.border}`}}>
+              {['Fecha','Torneo','R','Surf','J1 (modelo)','J2','Pick','Ganador real','✓','Prob','3S pred','3S real','Conf'].map(h=>(
+                <th key={h} style={{padding:'7px 8px',textAlign:'left',color:C.muted,fontFamily:'Syne Mono',fontSize:8,textTransform:'uppercase',letterSpacing:'1px',whiteSpace:'nowrap'}}>{h}</th>
+              ))}
+            </tr></thead>
+            <tbody>
+              {(showAll?result.results:[...result.results].slice(-30)).map((r,i)=>(
+                <tr key={i} style={{borderBottom:`1px solid ${C.border}33`,background:i%2?C.s2+'22':'transparent'}}>
+                  <td style={{padding:'5px 8px',color:C.muted,fontFamily:'Syne Mono',fontSize:9,whiteSpace:'nowrap'}}>{r.date}</td>
+                  <td style={{padding:'5px 8px',fontSize:10,color:C.mutedL,maxWidth:120,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{r.tourney}</td>
+                  <td style={{padding:'5px 8px',fontSize:9,color:C.muted,fontFamily:'Syne Mono'}}>{r.round}</td>
+                  <td style={{padding:'5px 8px'}}><SurfBadge surf={r.surf} sz={8}/></td>
+                  <td style={{padding:'5px 8px',fontWeight:600,fontSize:11}}>{r.p1}</td>
+                  <td style={{padding:'5px 8px',fontSize:11,color:C.mutedL}}>{r.p2}</td>
+                  <td style={{padding:'5px 8px',fontWeight:700,fontSize:11,color:C.sky}}>{r.modelPick.split(' ').slice(-1)[0]}</td>
+                  <td style={{padding:'5px 8px',fontWeight:700,fontSize:11,color:r.correct?C.lime:C.rose}}>{r.winner.split(' ').slice(-1)[0]}</td>
+                  <td style={{padding:'5px 8px',textAlign:'center',fontSize:13}}>{r.correct?'✅':'❌'}</td>
+                  <td style={{padding:'5px 8px',fontFamily:'Syne Mono',fontSize:10,color:r.modelProb>=70?C.lime:r.modelProb>=60?C.amber:C.mutedL}}>{r.modelProb}%</td>
+                  <td style={{padding:'5px 8px',fontFamily:'Syne Mono',fontSize:9,color:C.violet}}>{r.ouPred}</td>
+                  <td style={{padding:'5px 8px',fontFamily:'Syne Mono',fontSize:9,color:r.ouCorrect?C.emerald:C.rose}}>{r.ouReal}</td>
+                  <td style={{padding:'5px 8px',fontFamily:'Syne Mono',fontSize:9,color:C.muted}}>{r.conf}%</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style={{marginTop:10,padding:'8px 14px',background:C.s2,borderRadius:8,border:`1px solid ${C.border}`}}>
+        <p style={{margin:0,fontSize:9,color:C.muted,fontFamily:'Syne Mono',lineHeight:1.7}}>
+          <span style={{color:C.lime}}>✅ Sin look-ahead:</span> Elo y stats se calculan partido a partido en orden cronológico.
+          Los {minM} primeros partidos de cada jugador se excluyen por muestra insuficiente.
+          P&L: €100 plano en pick del modelo, odds fijas -110 (1.91). Sin Kelly, sin gestión de banca. Solo fines educativos.
+        </p>
+      </div>
+    </div>}
+
+    {!result&&!loading&&!err&&<div style={{textAlign:'center',padding:'5rem',background:C.s1,borderRadius:12,border:`1px solid ${C.border}`}}>
+      <p style={{fontSize:48,marginBottom:16}}>🧪</p>
+      <p style={{color:C.mutedL,fontFamily:'Syne Mono',fontSize:13,lineHeight:2}}>
+        Elige tour, año y superficie<br/>y pulsa <span style={{color:C.lime}}>▶ EJECUTAR</span><br/>
+        para ver qué hubiera predicho el modelo<br/>vs lo que pasó realmente
+      </p>
+    </div>}
+  </div>;
+}
+
+// ── SPAIN TIMEZONE HELPERS ───────────────────────────────────
+// Spain: Europe/Madrid (CET UTC+1 / CEST UTC+2)
+function toSpainDate(isoString) {
+  // Returns "YYYY-MM-DD" in Spain local time
+  const d = new Date(isoString);
+  return d.toLocaleDateString('sv-SE', {timeZone:'Europe/Madrid'});
+}
+function toSpainTime(isoString) {
+  const d = new Date(isoString);
+  return d.toLocaleTimeString('es-ES', {
+    hour:'2-digit', minute:'2-digit', timeZone:'Europe/Madrid'
+  });
+}
+function toSpainDisplay(dateStr) {
+  // dateStr = "YYYY-MM-DD", returns "Lun 24 May"
+  const d = new Date(dateStr + 'T12:00:00');
+  return d.toLocaleDateString('es-ES', {weekday:'short', day:'numeric', month:'short'});
+}
+function spainToday() {
+  return new Date().toLocaleDateString('sv-SE', {timeZone:'Europe/Madrid'});
+}
+function App(){
+  const [tab,setTab]=useState('torneos');
+  const [atpData,setAtpData]=useState(null);
+  const [wtaData,setWtaData]=useState(null);
+  const [matches,setMatches]=useState(null);
+  const [selectedDate,setSelectedDate]=useState(null);
+  const [loading,setLoading]=useState(true);
+  const [prog,setProg]=useState('Iniciando…');
+  const [pct,setPct]=useState(0);
+  const [err,setErr]=useState('');
+  const [espnData,setEspnData]=useState(null);
+  const [oddsDebug,setOddsDebug]=useState(null); // debug info from fetchOddsTennis
+
+  // Compute available dates and filter matches by selected date (Spain TZ)
+  const availableDates = useMemo(()=>{
+    if(!matches||matches.length===0) return [];
+    const seen=new Set();
+    for(const m of matches){
+      if(m.commence_time) seen.add(toSpainDate(m.commence_time));
+    }
+    return [...seen].sort();
+  },[matches]);
+
+  // Auto-select today (or nearest future date) when dates load
+  useEffect(()=>{
+    if(availableDates.length===0) return;
+    const today=spainToday();
+    const pick=availableDates.find(d=>d>=today)||availableDates[0];
+    setSelectedDate(pick);
+  },[availableDates]);
+
+  // Matches filtered to selected date in Spain TZ
+  const filteredMatches = useMemo(()=>{
+    if(!matches||!selectedDate) return matches||[];
+    return matches.filter(m=>m.commence_time&&toSpainDate(m.commence_time)===selectedDate);
+  },[matches,selectedDate]);
+
+  useEffect(()=>{
+    let alive=true;
+    (async()=>{
+      try{
+        const onA=(msg,p)=>{if(alive){setProg(msg);setPct(p||0);}};
+        const atp=await loadData('ATP',300,onA);
+        if(!alive) return;
+        setAtpData(atp);
+        const onW=(msg,p)=>{if(alive){setProg(msg);setPct(50+(p||0)/2);}};
+        const wta=await loadData('WTA',150,onW);
+        if(!alive) return;
+        setWtaData(wta);
+        setProg('💰 Buscando líneas Odds API…');setPct(88);
+        const odds=await fetchOddsTennis();
+        if(!alive) return;
+        setMatches(odds);
+        setProg('📡 Cargando partidos del día…');setPct(95);
+        const sf=await fetchESPNToday();
+        if(!alive) return;
+        setEspnData(sf);
+        setPct(100);setProg('');setLoading(false);
+      }catch(e){
+        if(!alive) return;
+        setErr(e.message);setLoading(false);
+      }
+    })();
+    return()=>{alive=false;};
+  },[]);
+
+  const tabs=[
+    {id:'torneos', icon:'🏟️', label:'Torneos'},
+    {id:'matches', icon:'🎾', label:'Partidos'},
+    {id:'rankings',icon:'🏆', label:'Rankings'},
+    {id:'compare', icon:'⚔️', label:'H2H'},
+    {id:'stats',   icon:'📊', label:'Stats'},
+    {id:'backtest',icon:'🧪', label:'Backtest'},
+  ];
+
+  return<div style={{background:C.bg,minHeight:'100vh'}}>
+    {/* ── MAIN HEADER ── */}
+    <header style={{background:C.s1,borderBottom:`1px solid ${C.border}`,position:'sticky',top:0,zIndex:100,
+      padding:'0 1rem',display:'flex',alignItems:'center',gap:10,minHeight:54,flexWrap:'nowrap'}}>
+      <div style={{display:'flex',alignItems:'center',gap:8,flexShrink:0}}>
+        <div style={{width:30,height:30,flexShrink:0}}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="30" height="30">
+            <defs>
+              <linearGradient id="hbg" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#050810"/>
+                <stop offset="100%" stopColor="#0c1225"/>
+              </linearGradient>
+              <linearGradient id="hg1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#a3e635"/>
+                <stop offset="100%" stopColor="#22d3ee"/>
+              </linearGradient>
+            </defs>
+            <rect width="64" height="64" rx="13" fill="url(#hbg)"/>
+            <rect width="64" height="64" rx="13" fill="none" stroke="url(#hg1)" strokeWidth="2" opacity="0.5"/>
+            <circle cx="32" cy="32" r="17" fill="none" stroke="url(#hg1)" strokeWidth="2.5"/>
+            <path d="M15 32 Q32 13 49 32" fill="none" stroke="url(#hg1)" strokeWidth="2"/>
+            <path d="M15 32 Q32 51 49 32" fill="none" stroke="#22d3ee" strokeWidth="2" opacity="0.75"/>
+            <path d="M32 15 Q51 32 32 49" fill="none" stroke="#a3e635" strokeWidth="2" opacity="0.75"/>
+            <circle cx="32" cy="32" r="5" fill="url(#hg1)"/>
+            <path d="M45 11 L53 7 L51 16 Z" fill="#a3e635"/>
+          </svg>
+        </div>
+        <span style={{fontFamily:'Syne',fontWeight:900,fontSize:17,letterSpacing:'-0.3px',whiteSpace:'nowrap'}}>
+          Ace<span style={{color:C.lime}}>Bets</span>
+          <span style={{fontSize:9,fontWeight:400,color:C.muted,marginLeft:5,fontFamily:'Syne Mono'}}>PRO</span>
+        </span>
+        <span style={{fontSize:8,fontWeight:700,color:C.lime,fontFamily:'Syne Mono',opacity:.7}}>© Jorge Albert</span>
+      </div>
+      {/* Desktop nav */}
+      <nav id="desktop-nav" style={{display:'flex',gap:2,flexWrap:'wrap',marginLeft:8}}>
+        {tabs.map(t=>(
+          <button key={t.id} onClick={()=>setTab(t.id)} style={{padding:'5px 11px',borderRadius:6,border:'none',
+            background:tab===t.id?C.lime+'22':'transparent',color:tab===t.id?C.lime:C.mutedL,
+            fontWeight:700,fontSize:12,transition:'all .15s',display:'flex',gap:4,alignItems:'center',whiteSpace:'nowrap'}}>
+            {t.icon} {t.label}
+          </button>
+        ))}
+      </nav>
+      <div className="header-pts" style={{marginLeft:'auto',display:'flex',gap:10,alignItems:'center',flexShrink:0}}>
+        {atpData&&<span style={{fontFamily:'Syne Mono',fontSize:9,color:C.muted,lineHeight:1.6,textAlign:'right'}}>
+          <div style={{color:C.sky}}>⬤ ATP {atpData.players?.length}</div>
+          <div style={{color:C.rose}}>⬤ WTA {wtaData?.players?.length||0}</div>
+        </span>}
+        {filteredMatches&&<div style={{padding:'3px 8px',borderRadius:5,
+          background:filteredMatches.length>0?C.lime+'22':C.border,border:`1px solid ${filteredMatches.length>0?C.lime+'44':C.border}`}}>
+          <span style={{fontSize:9,fontWeight:700,fontFamily:'Syne Mono',color:filteredMatches.length>0?C.lime:C.mutedL,whiteSpace:'nowrap'}}>
+            {filteredMatches.length>0?`${filteredMatches.length} partidos`:'Sin líneas'}
+          </span>
+        </div>}
+      </div>
+    </header>
+
+    {/* ── MOBILE BOTTOM NAV ── */}
+    <nav id="mobile-nav" style={{position:'fixed',bottom:0,left:0,right:0,zIndex:200,
+      background:C.s1,borderTop:`1px solid ${C.border}`,
+      display:'flex',alignItems:'stretch',
+      paddingBottom:'env(safe-area-inset-bottom,0px)'}}>
+      {tabs.map(t=>(
+        <button key={t.id} onClick={()=>setTab(t.id)} style={{
+          flex:1,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
+          gap:2,padding:'6px 2px',border:'none',background:'transparent',
+          color:tab===t.id?C.lime:C.muted,minHeight:52,fontSize:9,fontWeight:tab===t.id?700:500,
+          fontFamily:'DM Sans',transition:'color .15s',borderTop:`2px solid ${tab===t.id?C.lime:'transparent'}`}}>
+          <span style={{fontSize:18,lineHeight:1}}>{t.icon}</span>
+          <span style={{fontSize:9,letterSpacing:0}}>{t.label}</span>
+        </button>
+      ))}
+    </nav>
+
+    {/* ── DATE SELECTOR BAR (Spain TZ) — visible only in match/torneo tabs ── */}
+    {!loading&&!err&&availableDates.length>0&&(tab==='torneos'||tab==='matches')&&(
+      <div className="date-bar" style={{background:C.s2,borderBottom:`1px solid ${C.border}`,padding:'8px 1rem',
+        display:'flex',alignItems:'center',gap:8,overflowX:'auto',position:'sticky',top:54,zIndex:90,
+        WebkitOverflowScrolling:'touch'}}>
+        {/* Clock Spain */}
+        <div style={{display:'flex',alignItems:'center',gap:6,flexShrink:0,marginRight:6,
+          padding:'4px 10px',background:C.s1,borderRadius:6,border:`1px solid ${C.border}`}}>
+          <span style={{fontSize:12}}>🇪🇸</span>
+          <span style={{fontFamily:'Syne Mono',fontSize:10,color:C.lime,fontWeight:700}}>
+            {new Date().toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Madrid'})}
+          </span>
+          <span style={{fontFamily:'Syne Mono',fontSize:9,color:C.muted}}>Madrid</span>
+        </div>
+
+        <div style={{width:1,height:20,background:C.border,flexShrink:0}}/>
+
+        {/* Date pills */}
+        {availableDates.map(d=>{
+          const isToday=d===spainToday();
+          const isSel=d===selectedDate;
+          const cnt=(matches||[]).filter(m=>m.commence_time&&toSpainDate(m.commence_time)===d).length;
+          return<button key={d} onClick={()=>setSelectedDate(d)} style={{
+            padding:'5px 14px',borderRadius:20,flexShrink:0,
+            border:`1px solid ${isSel?C.lime:isToday?C.lime+'55':C.border}`,
+            background:isSel?C.lime+'22':isToday?C.lime+'0a':'transparent',
+            color:isSel?C.lime:isToday?C.lime+'99':C.mutedL,
+            fontWeight:isSel?700:500,fontSize:12,transition:'all .15s',
+            display:'flex',alignItems:'center',gap:6,
+          }}>
+            {isToday&&<span style={{fontSize:9,fontWeight:700,color:C.lime}}>HOY</span>}
+            <span>{toSpainDisplay(d)}</span>
+            <span style={{fontFamily:'Syne Mono',fontSize:10,
+              padding:'1px 6px',borderRadius:10,
+              background:isSel?C.lime+'33':C.border,
+              color:isSel?C.lime:C.muted}}>{cnt}</span>
+          </button>;
+        })}
+      </div>
+    )}
+
+    {loading&&<div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'calc(100vh - 54px)',padding:'2rem'}}>
+      <div style={{width:50,height:50,border:`3px solid ${C.border}`,borderTop:`3px solid ${C.lime}`,borderRadius:'50%',marginBottom:24}} className="spin"/>
+      <p style={{fontFamily:'Syne Mono',fontSize:13,color:C.lime,marginBottom:10}}>{prog}</p>
+      <div style={{width:320,height:6,background:C.border,borderRadius:3,overflow:'hidden',marginBottom:8}}>
+        <div style={{width:pct+'%',height:'100%',background:`linear-gradient(90deg,${C.lime},${C.cyan})`,borderRadius:3,transition:'width .5s'}}/>
+      </div>
+      <p style={{fontFamily:'Syne Mono',fontSize:10,color:C.muted}}>{Math.round(pct)}%</p>
+      <p style={{fontFamily:'Syne Mono',fontSize:10,color:C.muted,marginTop:14,textAlign:'center',lineHeight:1.9,maxWidth:400}}>
+        Datos: Jeff Sackmann (tennis_atp/wta 2023–2025) · 100% reales<br/>
+        Elo por superficie · Forma por superficie · Fatiga real · P(srv) reales
+      </p>
+    </div>}
+
+    {err&&!loading&&<div style={{padding:'3rem',textAlign:'center'}}>
+      <p style={{color:C.rose,fontFamily:'Syne Mono',fontSize:13,marginBottom:12}}>⚠️ {err}</p>
+      <button onClick={()=>window.location.reload()} style={{padding:'8px 20px',background:C.lime+'22',border:`1px solid ${C.lime}`,borderRadius:6,color:C.lime,fontWeight:700}}>Reintentar</button>
+    </div>}
+
+    {!loading&&!err&&<main style={{maxWidth:1400,margin:'0 auto',padding:'1.25rem 1rem'}}>
+      {tab==='torneos' &&<TorneosTab atpData={atpData} wtaData={wtaData} matches={filteredMatches} selectedDate={selectedDate} espnData={espnData}/>}
+      {tab==='matches' &&<MatchesTab atpData={atpData} wtaData={wtaData} matches={filteredMatches} selectedDate={selectedDate}/>}
+      {tab==='rankings'&&<RankingsTab atpData={atpData} wtaData={wtaData}/>}
+      {tab==='compare' &&<CompareTab atpData={atpData} wtaData={wtaData}/>}
+      {tab==='stats'   &&<StatsTab atpData={atpData} wtaData={wtaData}/>}
+      {tab==='backtest'&&<BacktestTab/>}
+    </main>}
+
+    {!loading&&<footer style={{borderTop:`1px solid ${C.border}`,padding:'10px 1rem',display:'flex',justifyContent:'space-between',flexWrap:'wrap',gap:6}}>
+      <span className="footer-copy" style={{fontFamily:'Syne Mono',fontSize:9,color:C.muted}}>
+        AceBets Pro · Jeff Sackmann (tennis_atp/wta 2023-25) · Odds API · Solo fines educativos
+      </span>
+      <span className="footer-copy" style={{fontFamily:'Syne Mono',fontSize:9,color:C.muted}}>
+        Top 300 ATP · Top 150 WTA · Elo surf · Forma surf · Fatiga real · P(srv) real
+      </span>
+      <span className="footer-copy" style={{fontFamily:'Syne Mono',fontSize:9,color:C.lime,fontWeight:700,width:'100%',textAlign:'center',marginTop:4}}>
+        © 2025 Jorge Albert · Todos los derechos reservados · Prohibida su reproducción sin autorización
+      </span>
+    </footer>}
+  </div>;
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
