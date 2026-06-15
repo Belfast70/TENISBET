@@ -628,39 +628,57 @@ async function loadData(tour,topN,onProg){
 async function fetchESPNToday(){
   const result={tournaments:{},errors:[]};
   const today=new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Madrid'});
-  const PROXY='https://tenis-proxy.jorgeal70.workers.dev';
-  const SF_URL=`https://api.sofascore.com/api/v1/sport/tennis/scheduled-events/${today}`;
 
+  // TheSportsDB — gratuita, sin key, CORS abierto
   try{
-    const r=await fetch(`${PROXY}?url=${encodeURIComponent(SF_URL)}`);
-    if(!r.ok) throw new Error(`Proxy HTTP ${r.status}`);
+    const r=await fetch(
+      `https://www.thesportsdb.com/api/v1/json/3/eventsday.php?d=${today}&s=Tennis`,
+      {headers:{'Accept':'application/json'}}
+    );
+    if(!r.ok) throw new Error(`TheSportsDB HTTP ${r.status}`);
     const data=await r.json();
     const events=data.events||[];
-    console.log('📡 Sofascore via proxy: '+events.length+' eventos');
-    const EXCL=['itf-men','itf-women','itf'];
+    console.log('📡 TheSportsDB: '+events.length+' eventos');
+
+    // Excluir ITF y eventos no ATP/WTA
+    const EXCL=['itf','futures','challenger','w25','w50','w60','w80','w100','m15','m25'];
     for(const ev of events){
-      const catSlug=(ev.tournament?.category?.slug||'').toLowerCase();
-      const catName=(ev.tournament?.category?.name||'').toLowerCase();
-      if(EXCL.some(x=>catSlug===x||catName===x)) continue;
-      const isWTA=catName.includes('wta')||catSlug.includes('wta')||catName==='women'||catSlug==='women'||catSlug.includes('women');
-      const isATP=catName.includes('atp')||catSlug.includes('atp')||catName==='men'||catSlug==='men'||catSlug.includes('men');
+      const league=(ev.strLeague||'').toLowerCase();
+      const tour=(ev.strTournament||ev.strEvent||'').toLowerCase();
+      if(EXCL.some(x=>league.includes(x)||tour.includes(x))) continue;
+
+      const isWTA=league.includes('wta')||league.includes('women')||tour.includes('wta');
+      const isATP=league.includes('atp')||league.includes('men')||tour.includes('atp');
       if(!isATP&&!isWTA) continue;
-      const tourId=ev.tournament?.id;
-      const tourName=ev.tournament?.name||'Unknown';
+
+      const tourName=ev.strLeague||ev.strTournament||'Tennis';
+      const tourId='tsdb_'+(ev.idLeague||ev.strLeague||'unknown');
       const sport=isWTA?'WTA':'ATP';
-      if(!result.tournaments[tourId]) result.tournaments[tourId]={id:tourId,name:tourName,sport,category:catName,matches:[]};
+      const home=ev.strHomeTeam||'';
+      const away=ev.strAwayTeam||'';
+      if(!home||!away) continue;
+
+      if(!result.tournaments[tourId]) result.tournaments[tourId]={
+        id:tourId,name:tourName,sport,category:sport,matches:[]
+      };
       result.tournaments[tourId].matches.push({
-        id:`sf_${ev.id}`,_source:'sofascore',
-        home_team:ev.homeTeam?.name||'',away_team:ev.awayTeam?.name||'',
-        home_slug:ev.homeTeam?.slug||'',away_slug:ev.awayTeam?.slug||'',
-        commence_time:ev.startTimestamp?new Date(ev.startTimestamp*1000).toISOString():today+'T12:00:00Z',
+        id:`tsdb_${ev.idEvent}`,_source:'thesportsdb',
+        home_team:home,away_team:away,home_slug:'',away_slug:'',
+        commence_time:ev.dateEvent&&ev.strTime
+          ?new Date(ev.dateEvent+'T'+ev.strTime).toISOString()
+          :today+'T12:00:00Z',
         sport_title:tourName,_sport:`tennis_${sport.toLowerCase()}`,
-        status:ev.status?.type||'notstarted',bookmakers:[],
+        status:ev.strStatus||'notstarted',bookmakers:[],
       });
     }
   }catch(e){
-    result.errors.push('Sofascore proxy: '+e.message);
-    // Fallback: Odds API /events
+    result.errors.push('TheSportsDB: '+e.message);
+    console.warn('TheSportsDB error:',e.message);
+  }
+
+  // Fallback: Odds API /events si TheSportsDB falla o no tiene datos
+  if(Object.keys(result.tournaments).length===0){
+    result.errors.push('Intentando Odds API /events...');
     try{
       const KEY='507e497bc731d05e37c5ada9edcea593';
       const BASE='https://api.the-odds-api.com/v4';
@@ -676,7 +694,9 @@ async function fetchESPNToday(){
           if(!Array.isArray(evs)) continue;
           const isWTA=sport.includes('wta');
           for(const ev of evs.filter(e=>{const d=e.commence_time?.slice(0,10);return d===today||d===tomorrow;})){
-            if(!result.tournaments[sport]) result.tournaments[sport]={id:sport,name:ev.sport_title||sport,sport:isWTA?'WTA':'ATP',category:isWTA?'WTA':'ATP',matches:[]};
+            if(!result.tournaments[sport]) result.tournaments[sport]={
+              id:sport,name:ev.sport_title||sport,sport:isWTA?'WTA':'ATP',category:isWTA?'WTA':'ATP',matches:[]
+            };
             result.tournaments[sport].matches.push({
               id:`ev_${ev.id}`,_source:'odds_events',
               home_team:ev.home_team||'',away_team:ev.away_team||'',home_slug:'',away_slug:'',
@@ -688,6 +708,7 @@ async function fetchESPNToday(){
       }
     }catch(e2){result.errors.push('Odds fallback: '+e2.message);}
   }
+
   const tourList=Object.values(result.tournaments);
   console.log('📡 Torneos:',tourList.length,'→',tourList.map(t=>`${t.sport} ${t.name}(${t.matches.length})`).join(' | '));
   window._espnResult=result;
