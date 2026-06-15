@@ -631,9 +631,23 @@ async function fetchESPNToday(){
   const RAPID_KEY='82e3a2231cmsheb3184df88735f1p17f574jsn8c5b8ed3999b';
   const RAPID_HOST='tennis-api-atp-wta-itf.p.rapidapi.com';
   const BASE=`https://${RAPID_HOST}/tennis/v2`;
-  const HEADERS={'x-rapidapi-key':RAPID_KEY,'x-rapidapi-host':RAPID_HOST,'Content-Type':'application/json'};
+  const H={'x-rapidapi-key':RAPID_KEY,'x-rapidapi-host':RAPID_HOST,'Content-Type':'application/json'};
 
-  // Fetch ATP + WTA fixtures for today
+  // Step 1: load tournament names for ATP and WTA
+  const tourNameMap={};
+  for(const tour of ['atp','wta']){
+    try{
+      const r=await fetch(`${BASE}/${tour}/tournaments`,{headers:H});
+      if(r.ok){
+        const d=await r.json();
+        const arr=Array.isArray(d.data)?d.data:Array.isArray(d)?d:[];
+        for(const t of arr) if(t.id&&t.name) tourNameMap[t.id]=t.name;
+      }
+    }catch(e){}
+  }
+  console.log('📡 Torneos mapeados:',Object.keys(tourNameMap).length);
+
+  // Step 2: fetch today fixtures for ATP + WTA
   const tours=[
     {key:'atp',sport:'ATP',url:`${BASE}/atp/fixtures/${today}`},
     {key:'wta',sport:'WTA',url:`${BASE}/wta/fixtures/${today}`},
@@ -641,49 +655,42 @@ async function fetchESPNToday(){
 
   for(const tour of tours){
     try{
-      const r=await fetch(tour.url,{headers:HEADERS});
+      const r=await fetch(tour.url,{headers:H});
       if(!r.ok){result.errors.push(`RapidAPI ${tour.sport} HTTP ${r.status}`);continue;}
       const data=await r.json();
-      // Response: data.data[] with tournament/match info
-      const fixtures=data.data||data.fixtures||data.results||data||[];
-      const arr=Array.isArray(fixtures)?fixtures:[];
+      const arr=Array.isArray(data.data)?data.data:[];
       console.log(`📡 RapidAPI ${tour.sport}: ${arr.length} fixtures`);
 
       for(const fix of arr){
-        // Tournament info
-        const tourName=fix.tournament?.name||fix.tournamentName||fix.league||tour.sport+' Tournament';
-        const tourId=`rapid_${tour.key}_`+(fix.tournament?.id||fix.tournamentId||tourName);
-        // Player/team names
-        const home=fix.homeTeam?.name||fix.home||fix.player1?.name||fix.firstPlayer?.name||'';
-        const away=fix.awayTeam?.name||fix.away||fix.player2?.name||fix.secondPlayer?.name||'';
+        const tid=fix.tournamentId;
+        const tourName=tourNameMap[tid]||`${tour.sport} Tournament (${tid||'?'})`;
+        const tourKey=`rapid_${tour.key}_${tid||'unknown'}`;
+        const home=fix.player1?.name||fix.homeTeam?.name||'';
+        const away=fix.player2?.name||fix.awayTeam?.name||'';
         if(!home||!away) continue;
 
-        const startTime=fix.startTimestamp?new Date(fix.startTimestamp*1000).toISOString()
-          :fix.date?new Date(fix.date).toISOString()
-          :today+'T12:00:00Z';
+        const startTime=fix.date?new Date(fix.date).toISOString():today+'T12:00:00Z';
 
-        if(!result.tournaments[tourId]) result.tournaments[tourId]={
-          id:tourId,name:tourName,sport:tour.sport,category:tour.sport,matches:[]
+        if(!result.tournaments[tourKey]) result.tournaments[tourKey]={
+          id:tourKey,name:tourName,sport:tour.sport,category:tour.sport,matches:[]
         };
-        result.tournaments[tourId].matches.push({
-          id:`rapid_${fix.id||fix.matchId||Math.random()}`,
+        result.tournaments[tourKey].matches.push({
+          id:`rapid_${fix.id||Math.random()}`,
           _source:'rapidapi',
           home_team:home,away_team:away,
           home_slug:'',away_slug:'',
           commence_time:startTime,
           sport_title:tourName,
           _sport:`tennis_${tour.key}`,
-          status:fix.status?.type||fix.statusType||'notstarted',
-          bookmakers:[],
+          status:'notstarted',bookmakers:[],
         });
       }
     }catch(e){
       result.errors.push(`RapidAPI ${tour.sport}: `+e.message);
-      console.warn(`RapidAPI ${tour.sport} error:`,e.message);
     }
   }
 
-  // Fallback: Odds API /events si RapidAPI falla
+  // Fallback: Odds API /events
   if(Object.keys(result.tournaments).length===0){
     result.errors.push('Intentando Odds API /events...');
     try{
