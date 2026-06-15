@@ -628,67 +628,74 @@ async function loadData(tour,topN,onProg){
 async function fetchESPNToday(){
   const result={tournaments:{},errors:[]};
   const today=new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Madrid'});
+  const RAPID_KEY='82e3a2231cmsheb3184df88735f1p17f574jsn8c5b8ed3999b';
+  const RAPID_HOST='tennis-api-atp-wta-itf.p.rapidapi.com';
+  const BASE=`https://${RAPID_HOST}/tennis/v2`;
+  const HEADERS={'x-rapidapi-key':RAPID_KEY,'x-rapidapi-host':RAPID_HOST,'Content-Type':'application/json'};
 
-  // TheSportsDB — gratuita, sin key, CORS abierto
-  try{
-    const r=await fetch(
-      `https://www.thesportsdb.com/api/v1/json/3/eventsday.php?d=${today}&s=Tennis`,
-      {headers:{'Accept':'application/json'}}
-    );
-    if(!r.ok) throw new Error(`TheSportsDB HTTP ${r.status}`);
-    const data=await r.json();
-    const events=data.events||[];
-    console.log('📡 TheSportsDB: '+events.length+' eventos');
+  // Fetch ATP + WTA fixtures for today
+  const tours=[
+    {key:'atp',sport:'ATP',url:`${BASE}/atp/fixtures/${today}`},
+    {key:'wta',sport:'WTA',url:`${BASE}/wta/fixtures/${today}`},
+  ];
 
-    // Excluir ITF y eventos no ATP/WTA
-    const EXCL=['itf','futures','challenger','w25','w50','w60','w80','w100','m15','m25'];
-    for(const ev of events){
-      const league=(ev.strLeague||'').toLowerCase();
-      const tour=(ev.strTournament||ev.strEvent||'').toLowerCase();
-      if(EXCL.some(x=>league.includes(x)||tour.includes(x))) continue;
+  for(const tour of tours){
+    try{
+      const r=await fetch(tour.url,{headers:HEADERS});
+      if(!r.ok){result.errors.push(`RapidAPI ${tour.sport} HTTP ${r.status}`);continue;}
+      const data=await r.json();
+      // Response: data.data[] with tournament/match info
+      const fixtures=data.data||data.fixtures||data.results||data||[];
+      const arr=Array.isArray(fixtures)?fixtures:[];
+      console.log(`📡 RapidAPI ${tour.sport}: ${arr.length} fixtures`);
 
-      const isWTA=league.includes('wta')||league.includes('women')||tour.includes('wta');
-      const isATP=league.includes('atp')||league.includes('men')||tour.includes('atp');
-      if(!isATP&&!isWTA) continue;
+      for(const fix of arr){
+        // Tournament info
+        const tourName=fix.tournament?.name||fix.tournamentName||fix.league||tour.sport+' Tournament';
+        const tourId=`rapid_${tour.key}_`+(fix.tournament?.id||fix.tournamentId||tourName);
+        // Player/team names
+        const home=fix.homeTeam?.name||fix.home||fix.player1?.name||fix.firstPlayer?.name||'';
+        const away=fix.awayTeam?.name||fix.away||fix.player2?.name||fix.secondPlayer?.name||'';
+        if(!home||!away) continue;
 
-      const tourName=ev.strLeague||ev.strTournament||'Tennis';
-      const tourId='tsdb_'+(ev.idLeague||ev.strLeague||'unknown');
-      const sport=isWTA?'WTA':'ATP';
-      const home=ev.strHomeTeam||'';
-      const away=ev.strAwayTeam||'';
-      if(!home||!away) continue;
+        const startTime=fix.startTimestamp?new Date(fix.startTimestamp*1000).toISOString()
+          :fix.date?new Date(fix.date).toISOString()
+          :today+'T12:00:00Z';
 
-      if(!result.tournaments[tourId]) result.tournaments[tourId]={
-        id:tourId,name:tourName,sport,category:sport,matches:[]
-      };
-      result.tournaments[tourId].matches.push({
-        id:`tsdb_${ev.idEvent}`,_source:'thesportsdb',
-        home_team:home,away_team:away,home_slug:'',away_slug:'',
-        commence_time:ev.dateEvent&&ev.strTime
-          ?new Date(ev.dateEvent+'T'+ev.strTime).toISOString()
-          :today+'T12:00:00Z',
-        sport_title:tourName,_sport:`tennis_${sport.toLowerCase()}`,
-        status:ev.strStatus||'notstarted',bookmakers:[],
-      });
+        if(!result.tournaments[tourId]) result.tournaments[tourId]={
+          id:tourId,name:tourName,sport:tour.sport,category:tour.sport,matches:[]
+        };
+        result.tournaments[tourId].matches.push({
+          id:`rapid_${fix.id||fix.matchId||Math.random()}`,
+          _source:'rapidapi',
+          home_team:home,away_team:away,
+          home_slug:'',away_slug:'',
+          commence_time:startTime,
+          sport_title:tourName,
+          _sport:`tennis_${tour.key}`,
+          status:fix.status?.type||fix.statusType||'notstarted',
+          bookmakers:[],
+        });
+      }
+    }catch(e){
+      result.errors.push(`RapidAPI ${tour.sport}: `+e.message);
+      console.warn(`RapidAPI ${tour.sport} error:`,e.message);
     }
-  }catch(e){
-    result.errors.push('TheSportsDB: '+e.message);
-    console.warn('TheSportsDB error:',e.message);
   }
 
-  // Fallback: Odds API /events si TheSportsDB falla o no tiene datos
+  // Fallback: Odds API /events si RapidAPI falla
   if(Object.keys(result.tournaments).length===0){
     result.errors.push('Intentando Odds API /events...');
     try{
       const KEY='507e497bc731d05e37c5ada9edcea593';
-      const BASE='https://api.the-odds-api.com/v4';
+      const BASE2='https://api.the-odds-api.com/v4';
       const tomorrow=new Date(Date.now()+86400000).toLocaleDateString('sv-SE',{timeZone:'Europe/Madrid'});
-      const sr=await fetch(`${BASE}/sports/?apiKey=${KEY}`);
+      const sr=await fetch(`${BASE2}/sports/?apiKey=${KEY}`);
       if(sr.ok){
         const all=await sr.json();
         const active=all.filter(s=>s.group==='Tennis'&&s.active).map(s=>s.key);
         for(const sport of active){
-          const r2=await fetch(`${BASE}/sports/${sport}/events?apiKey=${KEY}&dateFormat=iso`);
+          const r2=await fetch(`${BASE2}/sports/${sport}/events?apiKey=${KEY}&dateFormat=iso`);
           if(!r2.ok) continue;
           const evs=await r2.json();
           if(!Array.isArray(evs)) continue;
@@ -710,7 +717,7 @@ async function fetchESPNToday(){
   }
 
   const tourList=Object.values(result.tournaments);
-  console.log('📡 Torneos:',tourList.length,'→',tourList.map(t=>`${t.sport} ${t.name}(${t.matches.length})`).join(' | '));
+  console.log('📡 Torneos:',tourList.length,'->',tourList.map(t=>`${t.sport} ${t.name}(${t.matches.length})`).join(' | '));
   window._espnResult=result;
   return result;
 }
