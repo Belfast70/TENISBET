@@ -628,123 +628,68 @@ async function loadData(tour,topN,onProg){
 async function fetchESPNToday(){
   const result={tournaments:{},errors:[]};
   const today=new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Madrid'});
+  const PROXY='https://tenis-proxy.jorgeal70.workers.dev';
+  const SF_URL=`https://api.sofascore.com/api/v1/sport/tennis/scheduled-events/${today}`;
 
-  // Sofascore funciona desde https:// (GitHub Pages) — fuente principal
   try{
-    const r=await fetch(
-      `https://api.sofascore.com/api/v1/sport/tennis/scheduled-events/${today}`,
-      {headers:{'Accept':'application/json'}}
-    );
-    if(!r.ok){
-      result.errors.push(`Sofascore HTTP ${r.status}`);
-    } else {
-      const data=await r.json();
-      const events=data.events||[];
-
-      // Log categorías para debug
-      const cats=new Map();
-      for(const ev of events){
-        const k=ev.tournament?.category?.id;
-        if(!cats.has(k)) cats.set(k,{
-          id:k,
-          name:ev.tournament?.category?.name||'',
-          slug:ev.tournament?.category?.slug||'',
-          count:0
-        });
-        cats.get(k).count++;
-      }
-      console.log('📡 Sofascore categorías:', [...cats.values()]);
-
-      // Excluir solo ITF — incluir ATP, WTA, dobles, 125s, todo lo tour
-      const EXCL_SLUGS=['itf-men','itf-women'];
-      const EXCL_NAMES=['itf'];
-
-      for(const ev of events){
-        const catName=(ev.tournament?.category?.name||'').toLowerCase();
-        const catSlug=(ev.tournament?.category?.slug||'').toLowerCase();
-
-        // Saltar ITF
-        if(EXCL_SLUGS.some(x=>catSlug===x)||EXCL_NAMES.some(x=>catName===x)) continue;
-
-        // Incluir ATP, WTA y también "Men" / "Women" que es como Sofascore
-        // etiqueta Queens/Halle a veces
-        const isWTA=catName.includes('wta')||catSlug.includes('wta')||
-                    catName==='women'||catSlug==='women'||catSlug.includes('women');
-        const isATP=catName.includes('atp')||catSlug.includes('atp')||
-                    catName==='men'||catSlug==='men'||catSlug.includes('men');
-        if(!isATP&&!isWTA) continue;
-
-        const tourId=ev.tournament?.id;
-        const tourName=ev.tournament?.name||'Unknown';
-        const sport=isWTA?'WTA':'ATP';
-
-        if(!result.tournaments[tourId]){
-          result.tournaments[tourId]={
-            id:tourId,name:tourName,sport,
-            category:ev.tournament?.category?.name||sport,
-            matches:[],
-          };
-        }
-        result.tournaments[tourId].matches.push({
-          id:`sf_${ev.id}`,
-          _source:'sofascore',
-          home_team:ev.homeTeam?.name||'',
-          away_team:ev.awayTeam?.name||'',
-          home_slug:ev.homeTeam?.slug||'',
-          away_slug:ev.awayTeam?.slug||'',
-          commence_time:ev.startTimestamp
-            ?new Date(ev.startTimestamp*1000).toISOString()
-            :today+'T12:00:00Z',
-          sport_title:tourName,
-          _sport:`tennis_${sport.toLowerCase()}`,
-          status:ev.status?.type||'notstarted',
-          bookmakers:[],
-        });
-      }
+    const r=await fetch(`${PROXY}?url=${encodeURIComponent(SF_URL)}`);
+    if(!r.ok) throw new Error(`Proxy HTTP ${r.status}`);
+    const data=await r.json();
+    const events=data.events||[];
+    console.log('📡 Sofascore via proxy: '+events.length+' eventos');
+    const EXCL=['itf-men','itf-women','itf'];
+    for(const ev of events){
+      const catSlug=(ev.tournament?.category?.slug||'').toLowerCase();
+      const catName=(ev.tournament?.category?.name||'').toLowerCase();
+      if(EXCL.some(x=>catSlug===x||catName===x)) continue;
+      const isWTA=catName.includes('wta')||catSlug.includes('wta')||catName==='women'||catSlug==='women'||catSlug.includes('women');
+      const isATP=catName.includes('atp')||catSlug.includes('atp')||catName==='men'||catSlug==='men'||catSlug.includes('men');
+      if(!isATP&&!isWTA) continue;
+      const tourId=ev.tournament?.id;
+      const tourName=ev.tournament?.name||'Unknown';
+      const sport=isWTA?'WTA':'ATP';
+      if(!result.tournaments[tourId]) result.tournaments[tourId]={id:tourId,name:tourName,sport,category:catName,matches:[]};
+      result.tournaments[tourId].matches.push({
+        id:`sf_${ev.id}`,_source:'sofascore',
+        home_team:ev.homeTeam?.name||'',away_team:ev.awayTeam?.name||'',
+        home_slug:ev.homeTeam?.slug||'',away_slug:ev.awayTeam?.slug||'',
+        commence_time:ev.startTimestamp?new Date(ev.startTimestamp*1000).toISOString():today+'T12:00:00Z',
+        sport_title:tourName,_sport:`tennis_${sport.toLowerCase()}`,
+        status:ev.status?.type||'notstarted',bookmakers:[],
+      });
     }
   }catch(e){
-    result.errors.push('Sofascore: '+e.message);
-  }
-
-  // Si Sofascore falla, intentar con Odds API /events como fallback
-  if(Object.keys(result.tournaments).length===0){
-    result.errors.push('Sofascore sin datos, intentando Odds API /events...');
-    const KEY='507e497bc731d05e37c5ada9edcea593';
-    const BASE='https://api.the-odds-api.com/v4';
-    const tomorrow=new Date(Date.now()+86400000).toLocaleDateString('sv-SE',{timeZone:'Europe/Madrid'});
+    result.errors.push('Sofascore proxy: '+e.message);
+    // Fallback: Odds API /events
     try{
+      const KEY='507e497bc731d05e37c5ada9edcea593';
+      const BASE='https://api.the-odds-api.com/v4';
+      const tomorrow=new Date(Date.now()+86400000).toLocaleDateString('sv-SE',{timeZone:'Europe/Madrid'});
       const sr=await fetch(`${BASE}/sports/?apiKey=${KEY}`);
       if(sr.ok){
         const all=await sr.json();
         const active=all.filter(s=>s.group==='Tennis'&&s.active).map(s=>s.key);
         for(const sport of active){
-          try{
-            const r=await fetch(`${BASE}/sports/${sport}/events?apiKey=${KEY}&dateFormat=iso`);
-            if(!r.ok) continue;
-            const events=await r.json();
-            if(!Array.isArray(events)) continue;
-            const isWTA=sport.includes('wta');
-            for(const ev of events.filter(e=>{const d=e.commence_time?.slice(0,10);return d===today||d===tomorrow;})){
-              if(!result.tournaments[sport]) result.tournaments[sport]={
-                id:sport,name:ev.sport_title||sport,sport:isWTA?'WTA':'ATP',category:isWTA?'WTA':'ATP',matches:[]
-              };
-              result.tournaments[sport].matches.push({
-                id:`ev_${ev.id}`,_source:'odds_events',
-                home_team:ev.home_team||'',away_team:ev.away_team||'',
-                home_slug:'',away_slug:'',
-                commence_time:ev.commence_time||new Date().toISOString(),
-                sport_title:ev.sport_title||sport,_sport:sport,status:'notstarted',bookmakers:[],
-              });
-            }
-          }catch(e){}
+          const r2=await fetch(`${BASE}/sports/${sport}/events?apiKey=${KEY}&dateFormat=iso`);
+          if(!r2.ok) continue;
+          const evs=await r2.json();
+          if(!Array.isArray(evs)) continue;
+          const isWTA=sport.includes('wta');
+          for(const ev of evs.filter(e=>{const d=e.commence_time?.slice(0,10);return d===today||d===tomorrow;})){
+            if(!result.tournaments[sport]) result.tournaments[sport]={id:sport,name:ev.sport_title||sport,sport:isWTA?'WTA':'ATP',category:isWTA?'WTA':'ATP',matches:[]};
+            result.tournaments[sport].matches.push({
+              id:`ev_${ev.id}`,_source:'odds_events',
+              home_team:ev.home_team||'',away_team:ev.away_team||'',home_slug:'',away_slug:'',
+              commence_time:ev.commence_time||new Date().toISOString(),
+              sport_title:ev.sport_title||sport,_sport:sport,status:'notstarted',bookmakers:[],
+            });
+          }
         }
       }
-    }catch(e){result.errors.push('Odds fallback: '+e.message);}
+    }catch(e2){result.errors.push('Odds fallback: '+e2.message);}
   }
-
   const tourList=Object.values(result.tournaments);
-  console.log('📡 Torneos del día:',tourList.length,'→',
-    tourList.map(t=>`${t.sport} ${t.name}(${t.matches.length})`).join(' | '));
+  console.log('📡 Torneos:',tourList.length,'→',tourList.map(t=>`${t.sport} ${t.name}(${t.matches.length})`).join(' | '));
   window._espnResult=result;
   return result;
 }
