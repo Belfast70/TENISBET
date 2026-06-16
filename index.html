@@ -633,21 +633,94 @@ async function fetchESPNToday(){
   const BASE=`https://${RAPID_HOST}/tennis/v2`;
   const H={'x-rapidapi-key':RAPID_KEY,'x-rapidapi-host':RAPID_HOST,'Content-Type':'application/json'};
 
-  // Step 1: load tournament names for ATP and WTA
-  const tourNameMap={};
+  // Mapeo hardcoded de IDs conocidos + carga dinámica
+  const KNOWN_TOURS={
+    // ATP — IDs confirmados
+    21748:'cinch Championships (Queens Club)',  // confirmado del debug
+    21745:'Terra Wortmann Open (Halle) - Dobles',
+    21746:'cinch Championships (Queens Club) - Dobles',
+    21333:'Terra Wortmann Open (Halle)',
+    21749:'BOSS OPEN (Stuttgart)',
+    21750:'Wimbledon',
+    21335:'Roland Garros',
+    21336:'US Open',
+    21334:'Australian Open',
+    21337:'Nitto ATP Finals',
+    21340:'Masters 1000 Madrid',
+    21341:'Masters 1000 Roma',
+    21342:'Masters 1000 Montreal',
+    21343:'Masters 1000 Cincinnati',
+    21344:'Masters 1000 Shanghai',
+    21345:'Masters 1000 Paris',
+    21346:'Masters 1000 Miami',
+    21347:'Masters 1000 Indian Wells',
+    21348:'Masters 1000 Monte-Carlo',
+    21349:'Masters 1000 Madrid',
+    // WTA — IDs confirmados del debug
+    17078:'Rothesay Open (Nottingham)',         // confirmado del debug (tiene Shnaider, Turini)
+    17088:"Libéma Open ('s-Hertogenbosch)",
+    17040:'Wimbledon WTA',
+    18729:'Rothesay International (Eastbourne)',
+    17039:'WTA German Open (Berlin)',
+    17041:'Roland Garros WTA',
+    17042:'US Open WTA',
+    17043:'Australian Open WTA',
+    17044:'WTA Finals',
+    17045:'Internazionali BNL (Roma) WTA',
+    17046:'Mutua Madrid Open WTA',
+    17047:'Canadian Open WTA',
+    17048:'Western & Southern WTA',
+    17049:'Rothesay Open (Nottingham)',
+    17050:'Strasbourg WTA',
+    17051:'Lugano WTA',
+    17052:'Rabat WTA',
+    17053:'Poland Open WTA',
+    17054:'Bad Homburg WTA',
+    17055:'Ilkley WTA',
+    17056:'Brescia WTA',
+    17057:'Figueira da Foz WTA',
+    17058:'Rothesay Classic (Birmingham)',
+  };
+
+  // Surface map by tournament name keywords
+  const getSurface=(name)=>{
+    const n=(name||'').toLowerCase();
+    if(n.includes('wimbledon')||n.includes('halle')||n.includes('queens')||n.includes('club')||
+       n.includes('stuttgart')||n.includes('hertogenbosch')||n.includes('eastbourne')||
+       n.includes('birmingham')||n.includes('nottingham')||n.includes('ilkley')||n.includes('grass'))
+      return 'Grass';
+    if(n.includes('roland')||n.includes('french')||n.includes('monte')||n.includes('madrid')||
+       n.includes('roma')||n.includes('barcelona')||n.includes('clay')||n.includes('rabat')||
+       n.includes('lugano')||n.includes('strasbourg')||n.includes('varsovia')||n.includes('poland')||
+       n.includes('brescia')||n.includes('figueira'))
+      return 'Clay';
+    return 'Hard';
+  };
+
+  // Try to load tournament names dynamically first
+  const tourNameMap={...KNOWN_TOURS};
   for(const tour of ['atp','wta']){
-    try{
-      const r=await fetch(`${BASE}/${tour}/tournaments`,{headers:H});
-      if(r.ok){
+    for(const endpoint of [
+      `${BASE}/${tour}/tournaments`,
+      `${BASE}/${tour}/tournament`,
+      `https://${RAPID_HOST}/tennis/v2/${tour}/tournaments/active`,
+    ]){
+      try{
+        const r=await fetch(endpoint,{headers:H});
+        if(!r.ok) continue;
         const d=await r.json();
         const arr=Array.isArray(d.data)?d.data:Array.isArray(d)?d:[];
-        for(const t of arr) if(t.id&&t.name) tourNameMap[t.id]=t.name;
-      }
-    }catch(e){}
+        if(arr.length===0) continue;
+        for(const t of arr){
+          if(t.id&&t.name) tourNameMap[t.id]=t.name;
+        }
+        console.log(`📡 Loaded ${arr.length} ${tour.toUpperCase()} tournament names`);
+        break;
+      }catch(e){}
+    }
   }
-  console.log('📡 Torneos mapeados:',Object.keys(tourNameMap).length);
 
-  // Step 2: fetch today fixtures for ATP + WTA
+  // Fetch today fixtures
   const tours=[
     {key:'atp',sport:'ATP',url:`${BASE}/atp/fixtures/${today}`},
     {key:'wta',sport:'WTA',url:`${BASE}/wta/fixtures/${today}`},
@@ -663,25 +736,23 @@ async function fetchESPNToday(){
 
       for(const fix of arr){
         const tid=fix.tournamentId;
-        const tourName=tourNameMap[tid]||`${tour.sport} Tournament (${tid||'?'})`;
+        const tourName=tourNameMap[tid]||tourNameMap[String(tid)]
+          ||`${tour.sport} (ID:${tid||'?'})`;
         const tourKey=`rapid_${tour.key}_${tid||'unknown'}`;
         const home=fix.player1?.name||fix.homeTeam?.name||'';
         const away=fix.player2?.name||fix.awayTeam?.name||'';
         if(!home||!away) continue;
 
-        const startTime=fix.date?new Date(fix.date).toISOString():today+'T12:00:00Z';
-
         if(!result.tournaments[tourKey]) result.tournaments[tourKey]={
-          id:tourKey,name:tourName,sport:tour.sport,category:tour.sport,matches:[]
+          id:tourKey,name:tourName,sport:tour.sport,category:tour.sport,
+          surface:getSurface(tourName),matches:[]
         };
         result.tournaments[tourKey].matches.push({
-          id:`rapid_${fix.id||Math.random()}`,
-          _source:'rapidapi',
-          home_team:home,away_team:away,
-          home_slug:'',away_slug:'',
-          commence_time:startTime,
-          sport_title:tourName,
-          _sport:`tennis_${tour.key}`,
+          id:`rapid_${fix.id||Math.random()}`,_source:'rapidapi',
+          home_team:home,away_team:away,home_slug:'',away_slug:'',
+          commence_time:fix.date?new Date(fix.date).toISOString():today+'T12:00:00Z',
+          sport_title:tourName,_sport:`tennis_${tour.key}`,
+          _surface:getSurface(tourName),
           status:'notstarted',bookmakers:[],
         });
       }
@@ -690,7 +761,7 @@ async function fetchESPNToday(){
     }
   }
 
-  // Fallback: Odds API /events
+  // Fallback: Odds API
   if(Object.keys(result.tournaments).length===0){
     result.errors.push('Intentando Odds API /events...');
     try{
@@ -1099,15 +1170,40 @@ function MatchCard({match,atpPlayers,wtaPlayers}){
     if(ho&&ao){hOdds=ho.price;aOdds=ao.price;bkName=bk.title||bk.key;break;}
   }
   const tName=(match.sport_title||match._sport||'').toLowerCase();
-  const surface=tName.includes('clay')||tName.includes('roland')||tName.includes('french')?'Clay':
-                tName.includes('wimbledon')||tName.includes('grass')?'Grass':'Hard';
+  // Comprehensive grass court detection
+  const surface=match._surface||(
+    tName.includes('clay')||tName.includes('roland')||tName.includes('french')||
+    tName.includes('madrid')||tName.includes('rome')||tName.includes('monte')||
+    tName.includes('barcelona')||tName.includes('rabat')||tName.includes('brescia')||
+    tName.includes('figueira')||tName.includes('lugano')||tName.includes('strasbourg')?'Clay':
+    tName.includes('wimbledon')||tName.includes('grass')||tName.includes('queens')||
+    tName.includes('queen')||tName.includes('halle')||tName.includes('wortmann')||
+    tName.includes('stuttgart')||tName.includes('nottingham')||tName.includes('eastbourne')||
+    tName.includes('birmingham')||tName.includes('hertogenbosch')||tName.includes('ilkley')?'Grass':'Hard'
+  );
   const findP=name=>{
     if(!name) return null;
-    const nl=name.toLowerCase();
-    return all.find(p=>{
-      const pn=p.name?.toLowerCase()||'';
-      return pn===nl||pn.includes(nl)||nl.includes(pn)||nl.split(' ').some(pt=>pt.length>3&&pn.includes(pt));
+    const nl=name.toLowerCase().trim();
+    // Exact match first
+    let found=all.find(p=>(p.name||'').toLowerCase()===nl);
+    if(found) return found;
+    // Last name match (most reliable cross-source)
+    const parts=nl.split(/\s+/);
+    const lastName=parts[parts.length-1];
+    if(lastName.length>3){
+      found=all.find(p=>{
+        const pn=(p.name||'').toLowerCase();
+        return pn.endsWith(' '+lastName)||pn===lastName;
+      });
+      if(found) return found;
+    }
+    // Contains match
+    found=all.find(p=>{
+      const pn=(p.name||'').toLowerCase();
+      return pn.includes(nl)||nl.includes(pn)||
+        parts.filter(pt=>pt.length>3).every(pt=>pn.includes(pt));
     });
+    return found||null;
   };
   const p1=findP(home), p2=findP(away);
   const pred=p1&&p2?predictMatch(p1,p2,surface,null):null;
@@ -1427,35 +1523,28 @@ function TorneosTab({atpData,wtaData,matches,espnData}){
       }
       for(const sfTour of Object.values(espnData.tournaments)){
         if(isAlreadyCovered(sfTour.name,sfTour.sport)) continue;
-        const surf=determineSurface(sfTour.name+' '+sfTour.category);
+        // Use surface from API data if available, otherwise detect from name
+        const surf=sfTour.surface||determineSurface(sfTour.name+' '+sfTour.category);
         const realMatches=sfTour.matches.map(m=>{
           const p1=findP(m.home_team)||findP((m.home_slug||'').replace(/-/g,' '));
           const p2=findP(m.away_team)||findP((m.away_slug||'').replace(/-/g,' '));
           return{...m,_p1resolved:p1,_p2resolved:p2};
         });
-        // Only show tourney if at least some players could be resolved
-        const resolved=realMatches.filter(m=>m._p1resolved||m._p2resolved);
-        if(resolved.length===0&&realMatches.length>0){
-          // Keep anyway but flag as unresolved
+        if(realMatches.length>0){
           result.push({
             key:`sf_${sfTour.id}`,name:sfTour.name,sport:sfTour.sport,
             surface:surf,level:determineLevel(sfTour.name),
-            matches:realMatches,edgeCount:0,hasOdds:false,_source:'espn',
-            _unresolved:true,
-          });
-        } else if(realMatches.length>0){
-          result.push({
-            key:`sf_${sfTour.id}`,name:sfTour.name,sport:sfTour.sport,
-            surface:surf,level:determineLevel(sfTour.name),
-            matches:realMatches,edgeCount:0,hasOdds:false,_source:'espn',
+            matches:realMatches,edgeCount:0,hasOdds:false,_source:'rapidapi',
           });
         }
       }
     }
-    return result.sort((a,b)=>{
-      const lo={'Grand Slam':0,'Masters 1000':1,'WTA 1000':1,'ATP 500':2,'WTA 500':2,'ATP 250':3,'WTA 250':3};
-      return (lo[a.level]||9)-(lo[b.level]||9);
-    });
+    return result
+      .filter(t=>!t.name.toLowerCase().includes('dobles')&&!t.name.toLowerCase().includes('double'))
+      .sort((a,b)=>{
+        const lo={'Grand Slam':0,'Masters 1000':1,'WTA 1000':1,'ATP 500':2,'WTA 500':2,'ATP 250':3,'WTA 250':3};
+        return (lo[a.level]||9)-(lo[b.level]||9);
+      });
   },[oddsMap,espnData,findP,atpData,wtaData]);
 
   // FALLBACK: si no hay ningún torneo de API ni ESPN, usar calendario hardcoded
