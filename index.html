@@ -1184,28 +1184,18 @@ function MatchCard({match,atpPlayers,wtaPlayers}){
   const findP=name=>{
     if(!name) return null;
     const nl=name.toLowerCase().trim();
-    // Exact match first
-    let found=all.find(p=>(p.name||'').toLowerCase()===nl);
-    if(found) return found;
-    // Last name match (most reliable cross-source)
-    const parts=nl.split(/\s+/);
-    const lastName=parts[parts.length-1];
-    if(lastName.length>3){
-      found=all.find(p=>{
-        const pn=(p.name||'').toLowerCase();
-        return pn.endsWith(' '+lastName)||pn===lastName;
-      });
-      if(found) return found;
-    }
-    // Contains match
-    found=all.find(p=>{
+    return all.find(p=>{
       const pn=(p.name||'').toLowerCase();
+      if(pn===nl) return true;
+      const parts=nl.split(/\s+/);
+      const lastName=parts[parts.length-1];
+      if(lastName.length>3&&(pn.endsWith(' '+lastName)||pn===lastName)) return true;
       return pn.includes(nl)||nl.includes(pn)||
-        parts.filter(pt=>pt.length>3).every(pt=>pn.includes(pt));
-    });
-    return found||null;
+        parts.filter(pt=>pt.length>3).some(pt=>pn.includes(pt));
+    })||null;
   };
   const p1=findP(home), p2=findP(away);
+  if(!p1||!p2) console.log('❌ No player found:',{home,away,p1:!!p1,p2:!!p2,allCount:all.length});
   const pred=p1&&p2?predictMatch(p1,p2,surface,null):null;
   const hEdge=pred&&hOdds?calcEdge(pred.p1,hOdds):null;
   const aEdge=pred&&aOdds?calcEdge(pred.p2,aOdds):null;
