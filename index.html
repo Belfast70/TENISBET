@@ -518,8 +518,8 @@ function calcEdge(modelPct,dec){
 // ═══════════════════════════════════════════
 // DATA FETCHERS — Jeff Sackmann GitHub
 // ═══════════════════════════════════════════
-const ATP_BASE='https://raw.githubusercontent.com/JeffSackmann/tennis_atp/master';
-const WTA_BASE='https://raw.githubusercontent.com/JeffSackmann/tennis_wta/master';
+const ATP_BASE='https://cdn.jsdelivr.net/gh/JeffSackmann/tennis_atp@master';
+const WTA_BASE='https://cdn.jsdelivr.net/gh/JeffSackmann/tennis_wta@master';
 
 async function fetchMatches(tour,year){
   const base=tour==='ATP'?ATP_BASE:WTA_BASE;
