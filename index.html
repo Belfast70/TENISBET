@@ -518,25 +518,27 @@ function calcEdge(modelPct,dec){
 // ═══════════════════════════════════════════
 // DATA FETCHERS — Jeff Sackmann GitHub
 // ═══════════════════════════════════════════
-const ATP_BASE='https://cdn.jsdelivr.net/gh/JeffSackmann/tennis_atp@master';
-const WTA_BASE='https://cdn.jsdelivr.net/gh/JeffSackmann/tennis_wta@master';
+const ATP_BASE='https://raw.githubusercontent.com/JeffSackmann/tennis_atp/master';
+const WTA_BASE='https://raw.githubusercontent.com/JeffSackmann/tennis_wta/master';
+const CSV_PROXY='https://tenis-proxy.jorgeal70.workers.dev';
+function proxyUrl(url){ return `${CSV_PROXY}?url=${encodeURIComponent(url)}`; }
 
 async function fetchMatches(tour,year){
   const base=tour==='ATP'?ATP_BASE:WTA_BASE;
   const pfx=tour==='ATP'?'atp':'wta';
-  const txt=await cfetch(`${base}/${pfx}_matches_${year}.csv`);
+  const txt=await cfetch(proxyUrl(`${base}/${pfx}_matches_${year}.csv`));
   return parseCSV(txt||'');
 }
 async function fetchRankings(tour){
   const base=tour==='ATP'?ATP_BASE:WTA_BASE;
   const pfx=tour==='ATP'?'atp':'wta';
-  const txt=await cfetch(`${base}/${pfx}_rankings_current.csv`);
+  const txt=await cfetch(proxyUrl(`${base}/${pfx}_rankings_current.csv`));
   return parseCSV(txt||'');
 }
 async function fetchPlayersMeta(tour){
   const base=tour==='ATP'?ATP_BASE:WTA_BASE;
   const pfx=tour==='ATP'?'atp':'wta';
-  const txt=await cfetch(`${base}/${pfx}_players.csv`);
+  const txt=await cfetch(proxyUrl(`${base}/${pfx}_players.csv`));
   return parseCSV(txt||'');
 }
 
